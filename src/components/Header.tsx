@@ -10,7 +10,7 @@ const Header = () => {
       <div className="bg-gray-800 text-white py-2">
         <div className="container mx-auto px-4 flex items-center justify-between">
           <div className="text-sm">
-            <span>AccsMarket - Accounts store</span>
+            <span>AccsMarket - Social Media Accounts Store</span>
           </div>
           
           <div className="flex items-center space-x-4">
@@ -54,7 +54,7 @@ const Header = () => {
               
               <a href="#" className="text-sm font-medium text-gray-700 hover:text-blue-600 flex items-center">
                 <Menu className="h-4 w-4 mr-1" />
-                New ticket / Ask a question
+                Support
               </a>
               
               <a href="#" className="text-sm font-medium text-gray-700 hover:text-blue-600">
@@ -63,12 +63,15 @@ const Header = () => {
               
               <div className="relative group">
                 <button className="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
-                  Useful information <ChevronDown className="ml-1 h-4 w-4" />
+                  Account Types <ChevronDown className="ml-1 h-4 w-4" />
                 </button>
                 <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-10">
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Guides</a>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Resources</a>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Help</a>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Instagram</a>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Facebook</a>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Twitter</a>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">LinkedIn</a>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Gmail</a>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">TikTok</a>
                 </div>
               </div>
               
@@ -96,7 +99,7 @@ const Header = () => {
           <div className="flex items-center space-x-4 w-full">
             <div className="relative flex-none">
               <Button variant="default" className="bg-green-600 hover:bg-green-700 flex items-center">
-                <span>Select a category</span>
+                <span>Social Media</span>
                 <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -109,7 +112,7 @@ const Header = () => {
                   </div>
                   <input
                     type="text"
-                    placeholder="Search for accounts"
+                    placeholder="Search for social media accounts"
                     className="w-full pl-10 pr-3 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
@@ -124,7 +127,7 @@ const Header = () => {
       
       {/* Blue Banner */}
       <div className="bg-blue-50 py-2 text-center text-sm">
-        <span className="text-blue-900">Just like a SnapChat but for the web? See it now.</span>
+        <span className="text-blue-900">Verified social media accounts with full access. Buy securely today!</span>
         <a href="#" className="ml-1 text-blue-600 hover:underline font-medium">Learn more</a>
       </div>
     </header>

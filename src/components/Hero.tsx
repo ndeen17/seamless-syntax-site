@@ -10,7 +10,7 @@ const Hero = () => {
           <h1 className="text-3xl md:text-5xl font-bold mb-4">
             #1 Platform to Buy & Sell
             <br />
-            <span className="text-white/90">Affiliate sites</span>
+            <span className="text-white/90">Social Media Accounts</span>
           </h1>
           
           {/* Search bar */}
@@ -18,7 +18,7 @@ const Hero = () => {
             <div className="flex items-center bg-white rounded-full overflow-hidden shadow-lg">
               <input
                 type="text"
-                placeholder="e.g. Shopping, Travel..."
+                placeholder="e.g. Instagram, Facebook, Twitter..."
                 className="flex-grow px-6 py-4 text-gray-800 focus:outline-none"
               />
               <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 transition-colors duration-300 flex items-center">
@@ -34,22 +34,22 @@ const Hero = () => {
               Trending
             </div>
             <div className="bg-white/10 backdrop-blur-sm text-white rounded-full px-4 py-1.5 text-sm border border-white/20">
-              SaaS
+              Instagram
             </div>
             <div className="bg-white/10 backdrop-blur-sm text-white rounded-full px-4 py-1.5 text-sm border border-white/20">
-              eCommerce
+              Facebook
             </div>
             <div className="bg-white/10 backdrop-blur-sm text-white rounded-full px-4 py-1.5 text-sm border border-white/20">
-              Content
+              Twitter
             </div>
             <div className="bg-white/10 backdrop-blur-sm text-white rounded-full px-4 py-1.5 text-sm border border-white/20">
-              Marketplace
+              LinkedIn
             </div>
             <div className="bg-white/10 backdrop-blur-sm text-white rounded-full px-4 py-1.5 text-sm border border-white/20">
-              Service
+              Gmail
             </div>
             <div className="bg-white/10 backdrop-blur-sm text-white rounded-full px-4 py-1.5 text-sm border border-white/20">
-              App
+              TikTok
             </div>
           </div>
           
