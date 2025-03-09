@@ -1,49 +1,67 @@
 
 import React from 'react';
-import { Star, ChevronRight, Heart, ShoppingCart, Activity, BarChart, Globe } from 'lucide-react';
+import { Star, ChevronRight, Heart, ShoppingCart, Activity, BarChart, Globe, Twitter, Instagram, Facebook, Linkedin, Mail } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
-interface BusinessCardProps {
+interface AccountCardProps {
   title: string;
-  category: string;
+  platform: string;
   price: string;
   rating: number;
   reviews: number;
-  monthlyNet: string;
-  monthlyRevenue: string;
-  yearlyProfit: string;
-  multiplesType: string;
-  multiples: string;
+  followers: string;
+  engagement: string;
+  accountAge: string;
+  accountType: string;
+  verificationStatus: string;
   age: string;
   tags?: string[];
   verified?: boolean;
 }
 
-const BusinessCard: React.FC<BusinessCardProps> = ({
+const AccountCard: React.FC<AccountCardProps> = ({
   title,
-  category,
+  platform,
   price,
   rating,
   reviews,
-  monthlyNet,
-  monthlyRevenue,
-  yearlyProfit,
-  multiplesType,
-  multiples,
+  followers,
+  engagement,
+  accountAge,
+  accountType,
+  verificationStatus,
   age,
   tags,
   verified
 }) => {
+  // Function to determine which icon to show based on platform
+  const getPlatformIcon = (platform: string) => {
+    switch (platform.toLowerCase()) {
+      case 'twitter':
+        return <Twitter className="h-10 w-10 text-accsmarket-blue" />;
+      case 'instagram':
+        return <Instagram className="h-10 w-10 text-accsmarket-blue" />;
+      case 'facebook':
+        return <Facebook className="h-10 w-10 text-accsmarket-blue" />;
+      case 'linkedin':
+        return <Linkedin className="h-10 w-10 text-accsmarket-blue" />;
+      case 'gmail':
+        return <Mail className="h-10 w-10 text-accsmarket-blue" />;
+      default:
+        return <Globe className="h-10 w-10 text-accsmarket-blue" />;
+    }
+  };
+
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden mb-4 hover:shadow-md transition-all duration-300">
       <div className="flex flex-col md:flex-row">
         {/* Left thumbnail */}
         <div className="w-full md:w-40 h-32 md:h-full bg-gray-100 flex items-center justify-center p-4 relative">
           <div className="w-24 h-24 bg-blue-50 flex items-center justify-center rounded">
-            <Globe className="h-10 w-10 text-flippa-blue" />
+            {getPlatformIcon(platform)}
           </div>
           {verified && (
-            <div className="absolute top-2 left-2 bg-flippa-blue text-white text-xs px-2 py-1 rounded-full">
+            <div className="absolute top-2 left-2 bg-accsmarket-blue text-white text-xs px-2 py-1 rounded-full">
               Verified
             </div>
           )}
@@ -53,11 +71,11 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
         <div className="flex-1 p-4">
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="text-lg font-bold text-flippa-navy hover:text-flippa-blue">
+              <h3 className="text-lg font-bold text-accsmarket-navy hover:text-accsmarket-blue">
                 {title}
               </h3>
               <div className="flex items-center mt-1">
-                <span className="text-sm font-medium text-gray-600 mr-2">{category}</span>
+                <span className="text-sm font-medium text-gray-600 mr-2">{platform}</span>
                 {rating > 0 && (
                   <div className="flex items-center">
                     {Array.from({ length: 5 }).map((_, i) => (
@@ -72,8 +90,8 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
               </div>
             </div>
             <div className="text-right">
-              <div className="text-lg font-bold text-flippa-navy">{price}</div>
-              <div className="text-xs text-gray-500">Initial Asking Price</div>
+              <div className="text-lg font-bold text-accsmarket-navy">{price}</div>
+              <div className="text-xs text-gray-500">Current Price</div>
             </div>
           </div>
           
@@ -91,28 +109,28 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
           {/* Metrics Grid */}
           <div className="grid grid-cols-3 gap-4 mt-4">
             <div>
-              <div className="text-xs text-gray-500">Monthly Net</div>
-              <div className="font-medium">{monthlyNet}</div>
+              <div className="text-xs text-gray-500">Followers</div>
+              <div className="font-medium">{followers}</div>
             </div>
             <div>
-              <div className="text-xs text-gray-500">Revenue</div>
-              <div className="font-medium">{monthlyRevenue}/mo</div>
+              <div className="text-xs text-gray-500">Engagement</div>
+              <div className="font-medium">{engagement}</div>
             </div>
             <div>
-              <div className="text-xs text-gray-500">{multiplesType}</div>
-              <div className="font-medium">{multiples}x</div>
+              <div className="text-xs text-gray-500">Verification</div>
+              <div className="font-medium">{verificationStatus}</div>
+            </div>
+            <div>
+              <div className="text-xs text-gray-500">Account Age</div>
+              <div className="font-medium">{accountAge}</div>
+            </div>
+            <div>
+              <div className="text-xs text-gray-500">Account Type</div>
+              <div className="font-medium">{accountType}</div>
             </div>
             <div>
               <div className="text-xs text-gray-500">Age</div>
               <div className="font-medium">{age}</div>
-            </div>
-            <div>
-              <div className="text-xs text-gray-500">Yearly Profit</div>
-              <div className="font-medium">{yearlyProfit}</div>
-            </div>
-            <div>
-              <div className="text-xs text-gray-500">Multiple</div>
-              <div className="font-medium">{multiples}x</div>
             </div>
           </div>
         </div>
@@ -125,7 +143,7 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
           Watch
         </Button>
         <Button variant="outline" size="sm" className="text-gray-600 border-gray-300">
-          View Listing
+          View Account
         </Button>
       </div>
     </div>
@@ -133,77 +151,77 @@ const BusinessCard: React.FC<BusinessCardProps> = ({
 };
 
 const BusinessList = () => {
-  const businesses = [
+  const accounts = [
     {
-      title: "SaaS | Business",
-      category: "Software",
-      price: "USD $650,000",
+      title: "Established Instagram Fashion Account",
+      platform: "Instagram",
+      price: "USD $3,500",
       rating: 4,
       reviews: 15,
-      monthlyNet: "$16,000",
-      monthlyRevenue: "$20,000",
-      yearlyProfit: "$192,000",
-      multiplesType: "Revenue Multiple",
-      multiples: "2.7",
-      age: "3 years 10 mos",
-      tags: ["Verified Seller", "Financial Data Verified"],
+      followers: "56K",
+      engagement: "3.2%",
+      accountAge: "4 years 2 mos",
+      accountType: "Business",
+      verificationStatus: "Blue Tick",
+      age: "4 years 2 mos",
+      tags: ["Verified Seller", "Instant Transfer"],
       verified: true
     },
     {
-      title: "Chrome Extension | Internet",
-      category: "Internet",
-      price: "USD $30,000",
+      title: "Twitter Tech News Account",
+      platform: "Twitter",
+      price: "USD $1,200",
       rating: 4,
       reviews: 8,
-      monthlyNet: "$1,000",
-      monthlyRevenue: "$1,000",
-      yearlyProfit: "$12,000",
-      multiplesType: "Revenue Multiple",
-      multiples: "2.5",
-      age: "1 year 2 mos",
+      followers: "12K",
+      engagement: "2.7%",
+      accountAge: "2 years 6 mos",
+      accountType: "Standard",
+      verificationStatus: "Not Verified",
+      age: "2 years 6 mos",
       verified: false
     },
     {
-      title: "SaaS | Education",
-      category: "Education",
-      price: "USD $16,250",
+      title: "LinkedIn Professional Profile",
+      platform: "LinkedIn",
+      price: "USD $850",
       rating: 3,
       reviews: 6,
-      monthlyNet: "$650",
-      monthlyRevenue: "$650",
-      yearlyProfit: "$7,800",
-      multiplesType: "Revenue Multiple",
-      multiples: "2.1",
-      age: "2 years 3 mos",
+      followers: "2.5K",
+      engagement: "4.1%",
+      accountAge: "5 years 3 mos",
+      accountType: "Premium",
+      verificationStatus: "Not Verified",
+      age: "5 years 3 mos",
       verified: false
     },
     {
-      title: "SaaS | Business",
-      category: "Software",
-      price: "USD $650,000",
+      title: "Facebook Community Page",
+      platform: "Facebook",
+      price: "USD $2,100",
       rating: 5,
       reviews: 22,
-      monthlyNet: "$13,500",
-      monthlyRevenue: "$18,200",
-      yearlyProfit: "$162,000",
-      multiplesType: "Revenue Multiple",
-      multiples: "3.3",
-      age: "4 years 11 mos",
-      tags: ["Verified Seller", "Financial Data Verified"],
+      followers: "35K",
+      engagement: "5.3%",
+      accountAge: "3 years 7 mos",
+      accountType: "Page",
+      verificationStatus: "Verified",
+      age: "3 years 7 mos",
+      tags: ["Verified Seller", "High Engagement"],
       verified: true
     },
     {
-      title: "SaaS | General Knowledge",
-      category: "Knowledge Base",
-      price: "USD $156,000",
+      title: "Gmail Account with Premium Benefits",
+      platform: "Gmail",
+      price: "USD $150",
       rating: 4,
       reviews: 12,
-      monthlyNet: "$3,250",
-      monthlyRevenue: "$4,100",
-      yearlyProfit: "$39,000",
-      multiplesType: "Revenue Multiple",
-      multiples: "3.2",
-      age: "2 years 6 mos",
+      followers: "N/A",
+      engagement: "N/A",
+      accountAge: "10 years",
+      accountType: "Premium",
+      verificationStatus: "2FA Enabled",
+      age: "10 years",
       verified: true
     }
   ];
@@ -211,32 +229,35 @@ const BusinessList = () => {
   return (
     <div className="py-16 bg-gray-50">
       <div className="container-custom">
-        <h2 className="text-2xl font-bold mb-6">Browse top online businesses</h2>
-        <p className="text-gray-600 mb-8">Plenty of proven, profitable businesses with strong growth potential to choose from.</p>
+        <h2 className="text-2xl font-bold mb-6">Browse top social media accounts</h2>
+        <p className="text-gray-600 mb-8">Find verified accounts with strong engagement and established histories across all major platforms.</p>
         
         {/* Filter tabs */}
         <div className="flex overflow-x-auto space-x-4 mb-8 py-2">
-          <button className="px-4 py-2 text-sm font-medium text-flippa-blue border-b-2 border-flippa-blue">
-            Businesses
+          <button className="px-4 py-2 text-sm font-medium text-accsmarket-blue border-b-2 border-accsmarket-blue">
+            All Accounts
           </button>
-          <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-flippa-blue border-b-2 border-transparent hover:border-gray-300">
-            Content/Advertising
+          <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-accsmarket-blue border-b-2 border-transparent hover:border-gray-300">
+            Instagram
           </button>
-          <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-flippa-blue border-b-2 border-transparent hover:border-gray-300">
-            Apps
+          <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-accsmarket-blue border-b-2 border-transparent hover:border-gray-300">
+            Twitter
           </button>
-          <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-flippa-blue border-b-2 border-transparent hover:border-gray-300">
-            Domains
+          <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-accsmarket-blue border-b-2 border-transparent hover:border-gray-300">
+            Facebook
           </button>
-          <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-flippa-blue border-b-2 border-transparent hover:border-gray-300">
-            Starter Sites
+          <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-accsmarket-blue border-b-2 border-transparent hover:border-gray-300">
+            LinkedIn
+          </button>
+          <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-accsmarket-blue border-b-2 border-transparent hover:border-gray-300">
+            Gmail
           </button>
         </div>
         
-        {/* Business listings */}
+        {/* Account listings */}
         <div className="space-y-6">
-          {businesses.map((business, index) => (
-            <BusinessCard key={index} {...business} />
+          {accounts.map((account, index) => (
+            <AccountCard key={index} {...account} />
           ))}
         </div>
       </div>
