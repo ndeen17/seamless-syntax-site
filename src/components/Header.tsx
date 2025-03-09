@@ -8,7 +8,7 @@ const Header = () => {
     <header className="w-full bg-white">
       {/* Top dark navbar */}
       <div className="bg-gray-800 text-white py-2">
-        <div className="container-custom flex items-center justify-between">
+        <div className="container mx-auto px-4 flex items-center justify-between">
           <div className="text-sm">
             <span>AccsMarket - Accounts store</span>
           </div>
@@ -22,7 +22,7 @@ const Header = () => {
               <span className="text-sm">+ Sign Up</span>
             </Button>
             
-            <Button size="sm" className="bg-flippa-blue hover:bg-blue-700 text-white">
+            <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
               <span className="text-sm">Login</span>
             </Button>
             
@@ -42,41 +42,41 @@ const Header = () => {
       
       {/* Middle navigation */}
       <div className="border-b border-gray-200">
-        <div className="container-custom py-3">
+        <div className="container mx-auto px-4 py-3">
           <nav className="flex items-center justify-between">
             <div className="flex items-center space-x-8">
-              <a href="#" className="flex items-center text-flippa-navy">
+              <a href="#" className="flex items-center text-blue-900">
                 <span className="text-sm font-medium flex items-center">
                   <span className="bg-red-600 text-white px-2 py-1 rounded mr-1">ACCS</span>
                   market.com
                 </span>
               </a>
               
-              <a href="#" className="text-sm font-medium text-gray-700 hover:text-flippa-blue flex items-center">
+              <a href="#" className="text-sm font-medium text-gray-700 hover:text-blue-600 flex items-center">
                 <Menu className="h-4 w-4 mr-1" />
                 New ticket / Ask a question
               </a>
               
-              <a href="#" className="text-sm font-medium text-gray-700 hover:text-flippa-blue">
+              <a href="#" className="text-sm font-medium text-gray-700 hover:text-blue-600">
                 Home
               </a>
               
               <div className="relative group">
-                <button className="flex items-center text-sm font-medium text-gray-700 hover:text-flippa-blue">
+                <button className="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
                   Useful information <ChevronDown className="ml-1 h-4 w-4" />
                 </button>
-                <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-10">
                   <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Guides</a>
                   <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Resources</a>
                   <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Help</a>
                 </div>
               </div>
               
-              <a href="#" className="text-sm font-medium text-gray-700 hover:text-flippa-blue">
+              <a href="#" className="text-sm font-medium text-gray-700 hover:text-blue-600">
                 FAQ
               </a>
               
-              <a href="#" className="text-sm font-medium text-gray-700 hover:text-flippa-blue">
+              <a href="#" className="text-sm font-medium text-gray-700 hover:text-blue-600">
                 Terms of use
               </a>
             </div>
@@ -92,15 +92,8 @@ const Header = () => {
       
       {/* Search bar section */}
       <div className="bg-gray-100 py-3">
-        <div className="container-custom flex items-center justify-between">
+        <div className="container mx-auto px-4 flex items-center">
           <div className="flex items-center space-x-4 w-full">
-            <div className="flex-none">
-              <div className="flex items-center">
-                <div className="bg-red-600 text-white px-2 py-1 font-bold rounded mr-1">ACCS</div>
-                <span className="text-gray-700">market.com</span>
-              </div>
-            </div>
-            
             <div className="relative flex-none">
               <Button variant="default" className="bg-green-600 hover:bg-green-700 flex items-center">
                 <span>Select a category</span>
@@ -117,7 +110,7 @@ const Header = () => {
                   <input
                     type="text"
                     placeholder="Search for accounts"
-                    className="w-full pl-10 pr-3 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-flippa-blue"
+                    className="w-full pl-10 pr-3 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
                 <Button className="bg-green-600 hover:bg-green-700 rounded-l-none">
@@ -130,9 +123,9 @@ const Header = () => {
       </div>
       
       {/* Blue Banner */}
-      <div className="bg-flippa-lightBlue py-2 text-center text-sm">
-        <span className="text-flippa-navy">Just like a SnapChat but for the web? See it now.</span>
-        <a href="#" className="ml-1 text-flippa-blue hover:underline font-medium">Learn more</a>
+      <div className="bg-blue-50 py-2 text-center text-sm">
+        <span className="text-blue-900">Just like a SnapChat but for the web? See it now.</span>
+        <a href="#" className="ml-1 text-blue-600 hover:underline font-medium">Learn more</a>
       </div>
     </header>
   );

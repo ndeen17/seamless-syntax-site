@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ChevronRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -119,7 +118,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-6 gap-8">
           <div className="md:col-span-2">
             <a href="/" className="block mb-4">
-              <span className="text-2xl font-bold text-flippa-navy">Flippa.</span>
+              <span className="text-2xl font-bold text-flippa-navy">AccsMarket.</span>
             </a>
             <p className="text-gray-600 text-sm mb-4">
               The #1 platform to buy and sell online businesses, trusted by over 3 million entrepreneurs.
@@ -186,7 +185,7 @@ const Footer = () => {
         
         {/* Bottom copyright */}
         <div className="mt-12 pt-6 border-t border-gray-200 flex flex-col md:flex-row justify-between">
-          <p className="text-sm text-gray-500">&copy; 2023 Flippa.com Pty Ltd. All rights reserved.</p>
+          <p className="text-sm text-gray-500">&copy; 2023 AccsMarket.com Pty Ltd. All rights reserved.</p>
           <div className="mt-4 md:mt-0 flex space-x-4">
             <a href="#" className="text-sm text-gray-500 hover:text-flippa-blue">Privacy Policy</a>
             <a href="#" className="text-sm text-gray-500 hover:text-flippa-blue">Terms of Service</a>

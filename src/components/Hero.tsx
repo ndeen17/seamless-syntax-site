@@ -5,7 +5,7 @@ import { Search } from 'lucide-react';
 const Hero = () => {
   return (
     <div className="bg-hero-pattern text-white">
-      <div className="container-custom py-16 md:py-24">
+      <div className="container mx-auto px-4 py-16 md:py-24">
         <div className="max-w-4xl mx-auto text-center animate-fade-in">
           <h1 className="text-3xl md:text-5xl font-bold mb-4">
             #1 Platform to Buy & Sell
@@ -21,7 +21,7 @@ const Hero = () => {
                 placeholder="e.g. Shopping, Travel..."
                 className="flex-grow px-6 py-4 text-gray-800 focus:outline-none"
               />
-              <button className="bg-flippa-blue hover:bg-blue-700 text-white px-6 py-4 transition-colors duration-300 flex items-center">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 transition-colors duration-300 flex items-center">
                 <Search className="h-5 w-5" />
                 <span className="ml-2">Search</span>
               </button>
@@ -55,7 +55,7 @@ const Hero = () => {
           
           {/* Payment methods */}
           <div className="mt-12 mb-4">
-            <p className="text-sm text-white/70 mb-4">Over 300,000 people trust Flippa globally</p>
+            <p className="text-sm text-white/70 mb-4">Over 300,000 people trust AccsMarket globally</p>
             <div className="flex justify-center space-x-2 overflow-x-auto py-2">
               {Array.from({ length: 18 }).map((_, i) => (
                 <div key={i} className="h-6 w-10 bg-white/20 rounded-sm animate-pulse-light" style={{ animationDelay: `${i * 0.1}s` }}></div>
