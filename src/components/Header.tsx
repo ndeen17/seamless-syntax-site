@@ -1,77 +1,130 @@
 
 import React from 'react';
-import { Search, User, ChevronDown, Menu } from 'lucide-react';
+import { Search, User, ChevronDown, Menu, Globe, Flag } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 const Header = () => {
   return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow-sm">
-      <div className="container-custom">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex items-center">
-            <a href="/" className="flex items-center">
-              <span className="text-2xl font-bold text-flippa-navy">Flippa.</span>
-            </a>
+    <header className="w-full bg-white">
+      {/* Top dark navbar */}
+      <div className="bg-gray-800 text-white py-2">
+        <div className="container-custom flex items-center justify-between">
+          <div className="text-sm">
+            <span>AccsMarket - Accounts store</span>
           </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-4">
-            <div className="relative group">
-              <button className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-flippa-blue">
-                Buy <ChevronDown className="ml-1 h-4 w-4" />
-              </button>
-              <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Websites</a>
-                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Applications</a>
-                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Online Businesses</a>
-              </div>
-            </div>
-            <div className="relative group">
-              <button className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-flippa-blue">
-                Sell <ChevronDown className="ml-1 h-4 w-4" />
-              </button>
-              <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">List Your Business</a>
-                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Broker Services</a>
-              </div>
-            </div>
-            <a href="#" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-flippa-blue">Why Flippa</a>
-            <a href="#" className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-flippa-blue">Blog</a>
-            <div className="relative group">
-              <button className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-flippa-blue">
-                Tools <ChevronDown className="ml-1 h-4 w-4" />
-              </button>
-              <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Valuation Tool</a>
-                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Resources</a>
-              </div>
-            </div>
-            <div className="relative group">
-              <button className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-flippa-blue">
-                Resources <ChevronDown className="ml-1 h-4 w-4" />
-              </button>
-              <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Help Center</a>
-                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Success Stories</a>
-              </div>
-            </div>
-          </nav>
-
-          {/* Right Side Items */}
-          <div className="flex items-center space-x-2">
-            <a href="#" className="hidden md:block text-sm font-medium text-gray-700 hover:text-flippa-blue px-2">Get a Free Valuation</a>
-            <Button className="hidden sm:inline-flex bg-white text-flippa-blue border border-flippa-blue hover:bg-flippa-lightBlue">
-              Log in
-            </Button>
-            <Button className="hidden sm:inline-flex bg-flippa-blue hover:bg-blue-700 text-white transition-colors duration-300">
-              Sign up
+          
+          <div className="flex items-center space-x-4">
+            <a href="#" className="text-sm flex items-center">
+              <span className="mr-1">@accsmarket</span>
+            </a>
+            
+            <Button size="sm" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10">
+              <span className="text-sm">+ Sign Up</span>
             </Button>
             
-            {/* Mobile menu button */}
-            <button className="md:hidden p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100">
-              <Menu className="h-6 w-6" />
-            </button>
+            <Button size="sm" className="bg-flippa-blue hover:bg-blue-700 text-white">
+              <span className="text-sm">Login</span>
+            </Button>
+            
+            <div className="flex items-center space-x-2">
+              <a href="#" className="flex items-center">
+                <Flag className="h-4 w-4 mr-1" />
+                <span className="text-sm">Eng</span>
+              </a>
+              <a href="#" className="flex items-center">
+                <Globe className="h-4 w-4 mr-1" />
+                <span className="text-sm">Рус</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Middle navigation */}
+      <div className="border-b border-gray-200">
+        <div className="container-custom py-3">
+          <nav className="flex items-center justify-between">
+            <div className="flex items-center space-x-8">
+              <a href="#" className="flex items-center text-flippa-navy">
+                <span className="text-sm font-medium flex items-center">
+                  <span className="bg-red-600 text-white px-2 py-1 rounded mr-1">ACCS</span>
+                  market.com
+                </span>
+              </a>
+              
+              <a href="#" className="text-sm font-medium text-gray-700 hover:text-flippa-blue flex items-center">
+                <Menu className="h-4 w-4 mr-1" />
+                New ticket / Ask a question
+              </a>
+              
+              <a href="#" className="text-sm font-medium text-gray-700 hover:text-flippa-blue">
+                Home
+              </a>
+              
+              <div className="relative group">
+                <button className="flex items-center text-sm font-medium text-gray-700 hover:text-flippa-blue">
+                  Useful information <ChevronDown className="ml-1 h-4 w-4" />
+                </button>
+                <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Guides</a>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Resources</a>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Help</a>
+                </div>
+              </div>
+              
+              <a href="#" className="text-sm font-medium text-gray-700 hover:text-flippa-blue">
+                FAQ
+              </a>
+              
+              <a href="#" className="text-sm font-medium text-gray-700 hover:text-flippa-blue">
+                Terms of use
+              </a>
+            </div>
+            
+            <div>
+              <a href="#" className="text-sm font-medium text-purple-600 hover:text-purple-700 flex items-center">
+                Become a seller
+              </a>
+            </div>
+          </nav>
+        </div>
+      </div>
+      
+      {/* Search bar section */}
+      <div className="bg-gray-100 py-3">
+        <div className="container-custom flex items-center justify-between">
+          <div className="flex items-center space-x-4 w-full">
+            <div className="flex-none">
+              <div className="flex items-center">
+                <div className="bg-red-600 text-white px-2 py-1 font-bold rounded mr-1">ACCS</div>
+                <span className="text-gray-700">market.com</span>
+              </div>
+            </div>
+            
+            <div className="relative flex-none">
+              <Button variant="default" className="bg-green-600 hover:bg-green-700 flex items-center">
+                <span>Select a category</span>
+                <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="relative flex-grow">
+              <div className="flex">
+                <div className="relative flex-grow">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <Search className="h-4 w-4 text-gray-500" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search for accounts"
+                    className="w-full pl-10 pr-3 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-flippa-blue"
+                  />
+                </div>
+                <Button className="bg-green-600 hover:bg-green-700 rounded-l-none">
+                  Advanced search
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
