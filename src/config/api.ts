@@ -28,3 +28,18 @@ export const TICKET_ENDPOINTS = {
   CREATE: `${API_BASE_URL}/create-ticket`,
   CLOSE: `${API_BASE_URL}/close-ticket`,
 };
+
+// Message endpoints
+export const MESSAGE_ENDPOINTS = {
+  SEND_USER: `${API_BASE_URL}/send-message`,
+  SEND_ADMIN: `${API_BASE_URL}/send-message-admin`,
+  FETCH_PER_TICKET: `${API_BASE_URL}/fetch-messages`,
+  FETCH_ALL: `${API_BASE_URL}/fetch-all-messages`,
+  MARK_SEEN_BY_USER: `${API_BASE_URL}/edit-message-seen-by-user`,
+  SEND_EMAIL: `${API_BASE_URL}/send-message-mail`,
+};
+
+// File endpoints
+export const FILE_ENDPOINTS = {
+  UPLOAD: `${API_BASE_URL}/upload-files`,
+};
