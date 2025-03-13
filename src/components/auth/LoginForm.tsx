@@ -5,14 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { login, isLoading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,18 +27,13 @@ const LoginForm = () => {
       return;
     }
     
-    // Here we would normally handle the actual authentication
-    // For now, we'll simulate a login with a delay
-    setIsLoading(true);
-    
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: "Success",
-        description: "You have successfully logged in",
-      });
+    try {
+      await login(email, password);
       navigate("/");
-    }, 1500);
+    } catch (error) {
+      // Error is already handled in the AuthContext
+      console.error("Login error:", error);
+    }
   };
 
   return (
@@ -98,7 +94,14 @@ const LoginForm = () => {
         </div>
         
         <div className="text-sm">
-          <a href="#" className="text-blue-600 hover:text-blue-800">
+          <a 
+            href="#" 
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/forgot-password");
+            }}
+            className="text-blue-600 hover:text-blue-800"
+          >
             Forgot your password?
           </a>
         </div>
