@@ -22,3 +22,9 @@ export const USER_ENDPOINTS = {
   UPDATE: (id: string) => `${API_BASE_URL}/users/${id}`,
   DELETE: (id: string) => `${API_BASE_URL}/users/${id}`,
 };
+
+// Ticket endpoints
+export const TICKET_ENDPOINTS = {
+  CREATE: `${API_BASE_URL}/create-ticket`,
+  CLOSE: `${API_BASE_URL}/close-ticket`,
+};

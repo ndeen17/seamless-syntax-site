@@ -1,7 +1,9 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Search, User, ChevronDown, Menu, Globe, Flag } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import SupportTicketButton from './SupportTicketButton';
 
 const Header = () => {
   return (
@@ -56,10 +58,8 @@ const Header = () => {
                 </span>
               </Link>
               
-              <a href="#" className="text-sm font-medium text-gray-700 hover:text-blue-600 flex items-center">
-                <Menu className="h-4 w-4 mr-1" />
-                Support
-              </a>
+              {/* Replace the support link with our new support ticket button */}
+              <SupportTicketButton />
               
               <Link to="/" className="text-sm font-medium text-gray-700 hover:text-blue-600">
                 Home

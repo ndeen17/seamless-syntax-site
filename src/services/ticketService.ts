@@ -1,0 +1,77 @@
+
+import { TICKET_ENDPOINTS } from '@/config/api';
+import { toast } from "sonner";
+
+interface TicketData {
+  subject: string;
+  message: string;
+  category?: string;
+  priority?: 'low' | 'medium' | 'high';
+  attachments?: File[];
+}
+
+interface CloseTicketData {
+  ticketId: string;
+  reason?: string;
+}
+
+// Helper function for API requests with environment-aware logging
+const apiRequest = async (url: string, method: string, data?: any) => {
+  try {
+    // For debugging in development only
+    if (import.meta.env.DEV) {
+      console.log(`Making ${method} request to: ${url}`);
+      if (data) console.log('Request data:', data);
+    }
+
+    const response = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: data ? JSON.stringify(data) : undefined,
+      credentials: 'include', // Important for cookies/sessions
+    });
+
+    const responseData = await response.json();
+    
+    // Log response in development
+    if (import.meta.env.DEV) {
+      console.log('Response:', responseData);
+    }
+
+    if (!response.ok) {
+      throw new Error(responseData.message || 'Something went wrong');
+    }
+
+    return responseData;
+  } catch (error) {
+    console.error('API request error:', error);
+    throw error;
+  }
+};
+
+// Ticket service functions
+export const ticketService = {
+  createTicket: async (data: TicketData) => {
+    try {
+      const response = await apiRequest(TICKET_ENDPOINTS.CREATE, 'POST', data);
+      toast.success("Support ticket created successfully");
+      return response;
+    } catch (error) {
+      toast.error("Failed to create support ticket");
+      throw error;
+    }
+  },
+  
+  closeTicket: async (data: CloseTicketData) => {
+    try {
+      const response = await apiRequest(TICKET_ENDPOINTS.CLOSE, 'PUT', data);
+      toast.success("Ticket closed successfully");
+      return response;
+    } catch (error) {
+      toast.error("Failed to close ticket");
+      throw error;
+    }
+  }
+};
