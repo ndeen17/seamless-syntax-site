@@ -1,5 +1,5 @@
-
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Search, User, ChevronDown, Menu, Globe, Flag } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
@@ -18,13 +18,17 @@ const Header = () => {
               <span className="mr-1">@accsmarket</span>
             </a>
             
-            <Button size="sm" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10">
-              <span className="text-sm">+ Sign Up</span>
-            </Button>
+            <Link to="/signup">
+              <Button size="sm" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10">
+                <span className="text-sm">+ Sign Up</span>
+              </Button>
+            </Link>
             
-            <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-              <span className="text-sm">Login</span>
-            </Button>
+            <Link to="/login">
+              <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+                <span className="text-sm">Login</span>
+              </Button>
+            </Link>
             
             <div className="flex items-center space-x-2">
               <a href="#" className="flex items-center">
@@ -45,21 +49,21 @@ const Header = () => {
         <div className="container mx-auto px-4 py-3">
           <nav className="flex items-center justify-between">
             <div className="flex items-center space-x-8">
-              <a href="#" className="flex items-center text-blue-900">
+              <Link to="/" className="flex items-center text-blue-900">
                 <span className="text-sm font-medium flex items-center">
                   <span className="bg-red-600 text-white px-2 py-1 rounded mr-1">ACCS</span>
                   market.com
                 </span>
-              </a>
+              </Link>
               
               <a href="#" className="text-sm font-medium text-gray-700 hover:text-blue-600 flex items-center">
                 <Menu className="h-4 w-4 mr-1" />
                 Support
               </a>
               
-              <a href="#" className="text-sm font-medium text-gray-700 hover:text-blue-600">
+              <Link to="/" className="text-sm font-medium text-gray-700 hover:text-blue-600">
                 Home
-              </a>
+              </Link>
               
               <div className="relative group">
                 <button className="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
