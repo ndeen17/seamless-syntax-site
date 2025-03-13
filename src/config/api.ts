@@ -1,6 +1,6 @@
 
-// Base API URL - replace with your actual backend URL
-export const API_BASE_URL = 'http://localhost:5000/api'; // Change this to your backend URL
+// Base API URL - reading from environment variable with fallback
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 // Auth endpoints
 export const AUTH_ENDPOINTS = {

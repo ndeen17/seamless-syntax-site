@@ -1,4 +1,3 @@
-
 import { AUTH_ENDPOINTS } from '@/config/api';
 
 interface SignupData {
@@ -32,9 +31,15 @@ interface ChangePasswordData {
   newPassword: string;
 }
 
-// Helper function for API requests
+// Helper function for API requests with environment-aware logging
 const apiRequest = async (url: string, method: string, data?: any) => {
   try {
+    // For debugging in development only
+    if (import.meta.env.DEV) {
+      console.log(`Making ${method} request to: ${url}`);
+      if (data) console.log('Request data:', data);
+    }
+
     const response = await fetch(url, {
       method,
       headers: {
@@ -44,12 +49,18 @@ const apiRequest = async (url: string, method: string, data?: any) => {
       credentials: 'include', // Important for cookies/sessions
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Something went wrong');
+    const responseData = await response.json();
+    
+    // Log response in development
+    if (import.meta.env.DEV) {
+      console.log('Response:', responseData);
     }
 
-    return await response.json();
+    if (!response.ok) {
+      throw new Error(responseData.message || 'Something went wrong');
+    }
+
+    return responseData;
   } catch (error) {
     console.error('API request error:', error);
     throw error;
