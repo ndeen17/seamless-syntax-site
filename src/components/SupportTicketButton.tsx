@@ -1,47 +1,44 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { MessageCircleQuestion } from "lucide-react";
 import SupportTicketDialog from "./SupportTicketDialog";
 import { MESSAGE_ENDPOINTS } from "@/config/api";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-interface UnreadCountResponse {
-  count: number;
-}
-
 const SupportTicketButton = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
   const isMobile = useIsMobile();
 
+  // Optimized to use useCallback to avoid re-creating function on every render
+  const checkUnreadMessages = useCallback(async () => {
+    try {
+      const response = await fetch(MESSAGE_ENDPOINTS.FETCH_ALL, {
+        credentials: 'include',
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        // Check if any messages from admin are unread
+        const unreadExists = data.messages?.some(
+          (msg: any) => msg.sender === 'admin' && !msg.seen
+        );
+        setHasUnreadMessages(unreadExists);
+      }
+    } catch (error) {
+      console.error("Failed to check unread messages:", error);
+    }
+  }, []);
+  
   // Check for unread messages
   useEffect(() => {
-    const checkUnreadMessages = async () => {
-      try {
-        const response = await fetch(MESSAGE_ENDPOINTS.FETCH_ALL, {
-          credentials: 'include',
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          // Check if any messages from admin are unread
-          const unreadExists = data.messages?.some(
-            (msg: any) => msg.sender === 'admin' && !msg.seen
-          );
-          setHasUnreadMessages(unreadExists);
-        }
-      } catch (error) {
-        console.error("Failed to check unread messages:", error);
-      }
-    };
-    
     // Check immediately and then every minute
     checkUnreadMessages();
     const interval = setInterval(checkUnreadMessages, 60000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [checkUnreadMessages]);
   
   // When dialog opens, reset the unread indicator
   useEffect(() => {
