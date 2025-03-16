@@ -80,7 +80,7 @@ const LoginForm = () => {
         </div>
       </div>
       
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
         <div className="flex items-center">
           <input
             id="remember-me"
@@ -124,7 +124,7 @@ const LoginForm = () => {
         </div>
       </div>
       
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Button variant="outline" type="button" className="w-full">
           Google
         </Button>
