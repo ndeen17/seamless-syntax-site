@@ -49,28 +49,28 @@ const Hero = () => {
             </div>
           </form>
           
-          {/* Category pills */}
+          {/* Category pills - replaced with social media platforms */}
           <div className="flex flex-wrap justify-center mt-6 gap-2 px-2">
             <div className="bg-white/10 backdrop-blur-sm text-white rounded-full px-3 sm:px-4 py-1 text-xs sm:text-sm border border-white/20">
-              Templates
+              Instagram
             </div>
             <div className="bg-white/10 backdrop-blur-sm text-white rounded-full px-3 sm:px-4 py-1 text-xs sm:text-sm border border-white/20">
-              eBooks
+              Facebook
             </div>
             <div className="bg-white/10 backdrop-blur-sm text-white rounded-full px-3 sm:px-4 py-1 text-xs sm:text-sm border border-white/20">
-              Courses
+              Twitter
             </div>
             <div className="bg-white/10 backdrop-blur-sm text-white rounded-full px-3 sm:px-4 py-1 text-xs sm:text-sm border border-white/20">
-              Graphics
+              LinkedIn
             </div>
             <div className="bg-white/10 backdrop-blur-sm text-white rounded-full px-3 sm:px-4 py-1 text-xs sm:text-sm border border-white/20">
-              Software
+              TikTok
             </div>
             <div className="bg-white/10 backdrop-blur-sm text-white rounded-full px-3 sm:px-4 py-1 text-xs sm:text-sm border border-white/20">
-              Audio
+              YouTube
             </div>
             <div className="bg-white/10 backdrop-blur-sm text-white rounded-full px-3 sm:px-4 py-1 text-xs sm:text-sm border border-white/20">
-              Plugins
+              Snapchat
             </div>
           </div>
         </div>
