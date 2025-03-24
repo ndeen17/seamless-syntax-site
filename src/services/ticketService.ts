@@ -6,7 +6,6 @@ interface TicketData {
   subject: string;
   message: string;
   category?: string;
-  priority?: 'low' | 'medium' | 'high';
   attachments?: File[];
 }
 

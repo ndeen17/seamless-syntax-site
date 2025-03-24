@@ -28,7 +28,6 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [category, setCategory] = useState("general");
-  const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Messaging & file state
@@ -92,7 +91,6 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
         subject,
         message,
         category,
-        priority,
       });
       
       // Set the ticket ID to enable messaging
@@ -102,7 +100,6 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
       setSubject("");
       setMessage("");
       setCategory("general");
-      setPriority("medium");
       
       // Add initial message to the messages list
       setMessages([{
@@ -180,7 +177,6 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
         setSubject("");
         setMessage("");
         setCategory("general");
-        setPriority("medium");
       }
       
       setNewMessage("");
@@ -235,22 +231,6 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
                   <option value="technical">Technical</option>
                   <option value="billing">Billing</option>
                   <option value="account">Account</option>
-                </select>
-              </div>
-              
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="priority" className="text-right">
-                  Priority
-                </Label>
-                <select
-                  id="priority"
-                  value={priority}
-                  onChange={(e) => setPriority(e.target.value as "low" | "medium" | "high")}
-                  className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-                >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
                 </select>
               </div>
               
