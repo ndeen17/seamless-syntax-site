@@ -43,3 +43,29 @@ export const MESSAGE_ENDPOINTS = {
 export const FILE_ENDPOINTS = {
   UPLOAD: `${API_BASE_URL}/upload-files`,
 };
+
+// Order endpoints
+export const ORDER_ENDPOINTS = {
+  CREATE: `${API_BASE_URL}/create-order`,
+  GET: (id: string) => `${API_BASE_URL}/order/${id}`,
+  LIST: `${API_BASE_URL}/orders`,
+  UPDATE: `${API_BASE_URL}/update-order`,
+  DELETE: (id: string) => `${API_BASE_URL}/order/${id}`,
+};
+
+// Wallet endpoints
+export const WALLET_ENDPOINTS = {
+  BALANCE: (walletId: string) => `${API_BASE_URL}/wallet/${walletId}/balance`,
+  ADD_FUNDS: `${API_BASE_URL}/wallet/add-funds`,
+  WITHDRAW_FUNDS: `${API_BASE_URL}/wallet/withdraw-funds`,
+  TRANSFER_FUNDS: `${API_BASE_URL}/wallet/transfer-funds`,
+};
+
+// Payment endpoints
+export const PAYMENT_ENDPOINTS = {
+  CREATE_CRYPTO: `${API_BASE_URL}/create-crypto-payment`,
+  CREATE_CURRENCY: `${API_BASE_URL}/create-currency-payment`,
+  STATUS: (id: string) => `${API_BASE_URL}/payment/${id}/status`,
+  USER_PAYMENTS: (userId: string) => `${API_BASE_URL}/user/${userId}/payments`,
+  IPN: `${API_BASE_URL}/ipn`,
+};

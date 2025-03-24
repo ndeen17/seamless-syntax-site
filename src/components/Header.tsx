@@ -5,6 +5,7 @@ import { Search, User, ChevronDown, Menu, Globe, Flag, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SupportTicketButton from './SupportTicketButton';
+import WalletButton from './WalletButton';
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -97,6 +98,14 @@ const Header = () => {
                       Terms of use
                     </a>
                     
+                    <Link to="/orders" className="text-sm font-medium text-gray-700 hover:text-blue-600 px-4 py-2">
+                      My Orders
+                    </Link>
+
+                    <Link to="/wallet" className="text-sm font-medium text-gray-700 hover:text-blue-600 px-4 py-2">
+                      My Wallet
+                    </Link>
+                    
                     <a href="#" className="text-sm font-medium text-purple-600 hover:text-purple-700 px-4 py-2">
                       Become a seller
                     </a>
@@ -139,17 +148,23 @@ const Header = () => {
                 <a href="#" className="text-sm font-medium text-gray-700 hover:text-blue-600">
                   Terms of use
                 </a>
+
+                <Link to="/orders" className="text-sm font-medium text-gray-700 hover:text-blue-600">
+                  My Orders
+                </Link>
               </div>
             </div>
             
-            <div className="hidden md:block">
+            <div className="hidden md:flex md:items-center md:space-x-4">
+              <WalletButton />
               <a href="#" className="text-sm font-medium text-purple-600 hover:text-purple-700 flex items-center">
                 Become a seller
               </a>
             </div>
             
             {/* Mobile Support Button */}
-            <div className="md:hidden">
+            <div className="md:hidden flex items-center space-x-2">
+              <WalletButton />
               <SupportTicketButton />
             </div>
           </nav>

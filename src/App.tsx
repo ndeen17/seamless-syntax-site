@@ -12,6 +12,10 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
+import WalletPage from "./pages/WalletPage";
+import OrdersPage from "./pages/OrdersPage";
+import CreateOrderPage from "./pages/CreateOrderPage";
+import OrderDetailPage from "./pages/OrderDetailPage";
 import "./App.css";
 
 // Create a Client once for the entire application
@@ -39,6 +43,15 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
+              
+              {/* Wallet Routes */}
+              <Route path="/wallet" element={<WalletPage />} />
+              
+              {/* Order Routes */}
+              <Route path="/orders" element={<OrdersPage />} />
+              <Route path="/create-order" element={<CreateOrderPage />} />
+              <Route path="/order/:orderId" element={<OrderDetailPage />} />
+              
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
