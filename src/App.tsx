@@ -5,7 +5,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import Index from "./pages/Index";
+import HomePage from "./pages/HomePage";
+import DigitalProducts from "./pages/DigitalProducts";
+import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -31,7 +33,9 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<HomePage />} />
+              <Route path="/digital-products" element={<DigitalProducts />} />
+              <Route path="/digital-products/:id" element={<ProductDetail />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
