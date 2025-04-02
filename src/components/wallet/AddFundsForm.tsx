@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -26,17 +25,18 @@ const AddFundsForm: React.FC = () => {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      // In a real app, you would add the user's wallet ID here
-      const response = await addFunds({ 
+      const userDetails = JSON.parse(localStorage.getItem("userDetails") || '{}');
+      const response = await addFunds({
         amount: values.amount,
-        walletId: '123', // This would come from auth context or similar
+        walletId: userDetails.id
       });
       toast({
         title: "Funds added successfully",
         description: `${values.amount} USD has been added to your wallet.`,
       });
       form.reset({ amount: 0 });
-    } catch (error) {
+      // Optionally: trigger a callback to refresh wallet balance in WalletPage.
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Failed to add funds",

@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, User, ChevronDown, Menu, Globe, Flag, X } from 'lucide-react';
+import { Search, ChevronDown, Menu, Globe, Flag } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SupportTicketButton from './SupportTicketButton';
 import WalletButton from './WalletButton';
-import { useAuth } from "@/contexts/AuthContext";
 
-const Header = () => {
+const UserHeader = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const { isAuthenticated } = useAuth(); // Check if the user is authenticated
 
   return (
     <header className="w-full bg-white">
@@ -24,24 +22,7 @@ const Header = () => {
             <a href="#" className="text-sm flex items-center">
               <span className="mr-1 hidden sm:inline">@accsmarket</span>
             </a>
-            
-            {/* Show sign up and login buttons only if not authenticated */}
-            {!isAuthenticated && (
-              <div className="flex items-center gap-2">
-                <Link to="/signup" className="hidden sm:block">
-                  <Button size="sm" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10">
-                    <span className="text-sm">+ Sign Up</span>
-                  </Button>
-                </Link>
-                
-                <Link to="/login">
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-                    <span className="text-sm sm:block">Login</span>
-                  </Button>
-                </Link>
-              </div>
-            )}
-            
+            {/* Removed sign up and login buttons */}
             <div className="flex items-center space-x-2">
               <a href="#" className="flex items-center">
                 <Flag className="h-4 w-4" />
@@ -113,14 +94,6 @@ const Header = () => {
                     <a href="#" className="text-sm font-medium text-purple-600 hover:text-purple-700 px-4 py-2">
                       Become a seller
                     </a>
-                    
-                    {!isAuthenticated && (
-                      <Link to="/signup" className="md:hidden px-4 py-2">
-                        <Button variant="outline" className="w-full">
-                          <span className="text-sm">+ Sign Up</span>
-                        </Button>
-                      </Link>
-                    )}
                   </div>
                 </SheetContent>
               </Sheet>
@@ -162,7 +135,7 @@ const Header = () => {
             </div>
             
             <div className="hidden md:flex md:items-center md:space-x-4">
-              {isAuthenticated && <WalletButton />} {/* Show WalletButton only if authenticated */}
+              <WalletButton />
               <a href="#" className="text-sm font-medium text-purple-600 hover:text-purple-700 flex items-center">
                 Become a seller
               </a>
@@ -170,7 +143,7 @@ const Header = () => {
             
             {/* Mobile Support Button */}
             <div className="md:hidden flex items-center space-x-2">
-              {isAuthenticated && <WalletButton />} {/* Show WalletButton only if authenticated */}
+              <WalletButton />
               <SupportTicketButton />
             </div>
           </nav>
@@ -220,4 +193,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default UserHeader;

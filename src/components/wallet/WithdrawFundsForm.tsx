@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -28,26 +27,33 @@ const WithdrawFundsForm: React.FC<{ currentBalance: number }> = ({ currentBalanc
 
   const onSubmit = async (values: FormValues) => {
     if (values.amount > currentBalance) {
-      form.setError('amount', { 
-        type: 'manual', 
-        message: 'Withdrawal amount exceeds your current balance' 
+      form.setError('amount', {
+        type: 'manual',
+        message: 'Withdrawal amount exceeds your current balance'
       });
       return;
     }
-
+    if (values.amount < 10) {
+      form.setError('amount', {
+        type: 'manual',
+        message: 'Minimum withdrawal amount is $10'
+      });
+      return;
+    }
     try {
-      // In a real app, you would add the user's wallet ID here
-      const response = await withdrawFunds({ 
+      const userDetails = JSON.parse(localStorage.getItem("userDetails") || '{}');
+      const response = await withdrawFunds({
         amount: values.amount,
         accountNumber: values.accountNumber,
-        walletId: '123', // This would come from auth context
+        walletId: userDetails.id
       });
       toast({
         title: "Withdrawal request submitted",
         description: `${values.amount} USD withdrawal is being processed.`,
       });
       form.reset({ amount: 0, accountNumber: '' });
-    } catch (error) {
+      // Optionally: trigger a callback to refresh wallet balance.
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Failed to process withdrawal",
@@ -55,7 +61,6 @@ const WithdrawFundsForm: React.FC<{ currentBalance: number }> = ({ currentBalanc
       });
     }
   };
-
   return (
     <Card>
       <CardHeader>

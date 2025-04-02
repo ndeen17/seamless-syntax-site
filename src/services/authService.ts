@@ -4,6 +4,7 @@ interface SignupData {
   name: string;
   email: string;
   password: string;
+  code:string;
 }
 
 interface LoginData {
@@ -13,7 +14,7 @@ interface LoginData {
 
 interface VerifyCodeData {
   email: string;
-  verificationCode: string;
+  code: string;
 }
 
 interface ForgotPasswordData {
@@ -22,7 +23,7 @@ interface ForgotPasswordData {
 
 interface ApproveForgotPasswordData {
   email: string;
-  verificationCode: string;
+  code: string;
 }
 
 interface ChangePasswordData {

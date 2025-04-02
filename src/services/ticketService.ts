@@ -7,6 +7,7 @@ interface TicketData {
   message: string;
   category?: string;
   attachments?: File[];
+  user_id?: string;
 }
 
 interface CloseTicketData {

@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,7 +15,9 @@ import WalletPage from "./pages/WalletPage";
 import OrdersPage from "./pages/OrdersPage";
 import CreateOrderPage from "./pages/CreateOrderPage";
 import OrderDetailPage from "./pages/OrderDetailPage";
+import UserHomePage from "./pages/UserHomePage";
 import "./App.css";
+import TicketPage from "./pages/Ticketpage";
 
 // Create a Client once for the entire application
 const queryClient = new QueryClient({
@@ -43,6 +44,9 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/user-home" element={<UserHomePage />} />
+              <Route path="/ticket" element={<TicketPage />} />
+
               
               {/* Wallet Routes */}
               <Route path="/wallet" element={<WalletPage />} />

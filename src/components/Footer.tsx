@@ -14,7 +14,7 @@ const Footer = () => {
               <span className="text-2xl font-bold text-flippa-navy">AccsMarket.</span>
             </a>
             <p className="text-gray-600 text-sm mb-4">
-              The #1 platform to buy and sell online businesses, trusted by over 3 million entrepreneurs.
+              The #1 platform to buy and sell Social Media, trusted by over 3 million entrepreneurs.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full">
@@ -35,21 +35,21 @@ const Footer = () => {
           <div>
             <h4 className="font-bold mb-4">Buy</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Websites</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Ecommerce</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">SaaS</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Apps</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Content Sites</a></li>
+              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Instagram</a></li>
+              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Facebook</a></li>
+              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Telegram</a></li>
+              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Email</a></li>
+              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Snapchat</a></li>
             </ul>
           </div>
           
           <div>
             <h4 className="font-bold mb-4">Sell</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">List Your Business</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Broker Services</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Website Valuation</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Success Stories</a></li>
+              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Instagram</a></li>
+              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Facebook</a></li>
+              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Telegram</a></li>
+              <li><a href="#" className="text-gray-600 hover:text-flippa-blue text-sm">Email</a></li>
             </ul>
           </div>
           

@@ -1,7 +1,6 @@
 
 // Base API URL - reading from environment variable with fallback
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
-
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://aitool.asoroautomotive.com/api'
 // Auth endpoints
 export const AUTH_ENDPOINTS = {
   SIGNUP: `${API_BASE_URL}/user-signup`,

@@ -30,7 +30,7 @@ export const fetchFeaturedProducts = async (): Promise<Product[]> => {
 export const fetchAllProducts = async (): Promise<Product[]> => {
   try {
     const response = await axios.get(DIGITAL_PRODUCTS_ENDPOINTS.ALL);
-    return response.data.products || [];
+    return response.data || [];
   } catch (error) {
     console.error('Error fetching all products:', error);
     throw error;
@@ -40,7 +40,7 @@ export const fetchAllProducts = async (): Promise<Product[]> => {
 export const fetchProductDetails = async (id: string): Promise<Product> => {
   try {
     const response = await axios.get(DIGITAL_PRODUCTS_ENDPOINTS.DETAILS(id));
-    return response.data.product;
+    return response.data;
   } catch (error) {
     console.error(`Error fetching product details for ID ${id}:`, error);
     throw error;

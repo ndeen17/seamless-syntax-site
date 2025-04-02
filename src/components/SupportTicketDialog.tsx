@@ -1,21 +1,28 @@
-
 import { useState, useEffect, useRef } from "react";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
   DialogTitle,
-  DialogClose
+  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ticketService } from "@/services/ticketService";
+import { authService } from "@/services/authService";
 import { messageService, Message } from "@/services/messageService";
-import { MessageCircleQuestion, Paperclip, Send, X, FileText, Image } from "lucide-react";
+import {
+  MessageCircleQuestion,
+  Paperclip,
+  Send,
+  X,
+  FileText,
+  Image,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SupportTicketDialogProps {
@@ -23,13 +30,17 @@ interface SupportTicketDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps) => {
+const SupportTicketDialog = ({
+  isOpen,
+  onOpenChange,
+}: SupportTicketDialogProps) => {
   // Form state
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [category, setCategory] = useState("general");
+  const [user_id, setUserId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Messaging & file state
   const [ticketId, setTicketId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -44,29 +55,48 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const response = await authService.verifyUser();
+        if (response) {
+          // console.log(response);
+          setUserId(response.id);
+        }
+      } catch (error) {
+        console.error("Auth status check failed:", error);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
+
   // Fetch messages when ticket exists and dialog is open
   useEffect(() => {
     if (ticketId && isOpen) {
       const fetchTicketMessages = async () => {
         try {
-          const fetchedMessages = await messageService.fetchMessages({ ticketId });
+          const fetchedMessages = await messageService.fetchMessages({
+            ticketId,
+          });
           setMessages(fetchedMessages);
-          
+
           // Mark unread messages as seen
-          fetchedMessages.forEach(msg => {
-            if (!msg.seen && msg.sender === 'admin') {
+          fetchedMessages.forEach((msg) => {
+            if (!msg.seen && msg.sender === "admin") {
               messageService.markAsSeen(msg.id);
             }
           });
-          
+
           setTimeout(scrollToBottom, 100);
         } catch (error) {
           console.error("Failed to fetch messages:", error);
         }
       };
-      
+
       fetchTicketMessages();
-      
+
       // Poll for new messages every 30 seconds
       const interval = setInterval(fetchTicketMessages, 30000);
       return () => clearInterval(interval);
@@ -91,25 +121,28 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
         subject,
         message,
         category,
+        user_id,
       });
-      
+
       // Set the ticket ID to enable messaging
       setTicketId(response.ticketId);
-      
+
       // Reset initial form
       setSubject("");
       setMessage("");
       setCategory("general");
-      
+
       // Add initial message to the messages list
-      setMessages([{
-        id: response.messageId,
-        ticketId: response.ticketId,
-        content: message,
-        sender: 'user',
-        timestamp: new Date().toISOString(),
-        seen: true
-      }]);
+      setMessages([
+        {
+          id: response.messageId,
+          ticketId: response.ticketId,
+          content: message,
+          sender: "user",
+          timestamp: new Date().toISOString(),
+          seen: true,
+        },
+      ]);
     } catch (error) {
       console.error("Failed to create ticket:", error);
     } finally {
@@ -121,13 +154,13 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
-      setSelectedFiles(prev => [...prev, ...filesArray]);
+      setSelectedFiles((prev) => [...prev, ...filesArray]);
     }
   };
 
   // Remove a selected file
   const removeFile = (index: number) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   // Trigger file input click
@@ -139,16 +172,16 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
   const handleSendMessage = async () => {
     if (!newMessage.trim() && selectedFiles.length === 0) return;
     if (!ticketId) return;
-    
+
     setIsSendingMessage(true);
     try {
       const sentMessage = await messageService.sendMessage({
         ticketId,
         content: newMessage,
-        attachments: selectedFiles
+        attachments: selectedFiles,
       });
-      
-      setMessages(prev => [...prev, sentMessage]);
+
+      setMessages((prev) => [...prev, sentMessage]);
       setNewMessage("");
       setSelectedFiles([]);
     } catch (error) {
@@ -160,12 +193,12 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
 
   // Get file icon based on type
   const getFileIcon = (filename: string) => {
-    const extension = filename.split('.').pop()?.toLowerCase();
-    
-    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension || '')) {
+    const extension = filename.split(".").pop()?.toLowerCase();
+
+    if (["jpg", "jpeg", "png", "gif", "webp"].includes(extension || "")) {
       return <Image className="h-4 w-4" />;
     }
-    
+
     return <FileText className="h-4 w-4" />;
   };
 
@@ -178,11 +211,11 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
         setMessage("");
         setCategory("general");
       }
-      
+
       setNewMessage("");
       setSelectedFiles([]);
     }
-    
+
     onOpenChange(open);
   };
 
@@ -198,7 +231,8 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
                 Create Support Ticket
               </DialogTitle>
               <DialogDescription>
-                Fill out the form below to create a new support ticket. Our team will respond as soon as possible.
+                Fill out the form below to create a new support ticket. Our team
+                will respond as soon as possible.
               </DialogDescription>
             </DialogHeader>
 
@@ -216,7 +250,7 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
                   placeholder="Brief description of your issue"
                 />
               </div>
-              
+
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="category" className="text-right">
                   Category
@@ -233,7 +267,7 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
                   <option value="account">Account</option>
                 </select>
               </div>
-              
+
               <div className="grid grid-cols-4 items-start gap-4">
                 <Label htmlFor="message" className="text-right pt-2">
                   Message
@@ -252,9 +286,15 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
 
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline" type="button">Cancel</Button>
+                <Button variant="outline" type="button">
+                  Cancel
+                </Button>
               </DialogClose>
-              <Button type="submit" disabled={isSubmitting} className="bg-blue-600 hover:bg-blue-700">
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
                 {isSubmitting ? "Submitting..." : "Submit Ticket"}
               </Button>
             </DialogFooter>
@@ -276,31 +316,35 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
             <div className="flex-1 overflow-y-auto py-4 px-1">
               <div className="space-y-4">
                 {messages.map((msg) => (
-                  <div 
-                    key={msg.id} 
+                  <div
+                    key={msg.id}
                     className={cn(
                       "flex flex-col max-w-[80%] rounded-lg p-3 relative",
-                      msg.sender === 'user' 
-                        ? "ml-auto bg-blue-600 text-white" 
+                      msg.sender === "user"
+                        ? "ml-auto bg-blue-600 text-white"
                         : "mr-auto bg-gray-100 text-gray-800"
                     )}
                   >
-                    {!msg.seen && msg.sender === 'admin' && (
-                      <div className="absolute -left-2 top-1 h-2 w-2 rounded-full bg-red-500" 
-                           title="New message"></div>
+                    {!msg.seen && msg.sender === "admin" && (
+                      <div
+                        className="absolute -left-2 top-1 h-2 w-2 rounded-full bg-red-500"
+                        title="New message"
+                      ></div>
                     )}
                     <div>{msg.content}</div>
                     {msg.attachments && msg.attachments.length > 0 && (
                       <div className="mt-2 space-y-1">
                         {msg.attachments.map((url, idx) => (
-                          <a 
-                            key={idx} 
-                            href={url} 
-                            target="_blank" 
+                          <a
+                            key={idx}
+                            href={url}
+                            target="_blank"
                             rel="noopener noreferrer"
                             className={cn(
                               "flex items-center text-sm underline",
-                              msg.sender === 'user' ? "text-white" : "text-blue-600"
+                              msg.sender === "user"
+                                ? "text-white"
+                                : "text-blue-600"
                             )}
                           >
                             {getFileIcon(url)}
@@ -309,10 +353,12 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
                         ))}
                       </div>
                     )}
-                    <div 
+                    <div
                       className={cn(
                         "text-xs mt-1",
-                        msg.sender === 'user' ? "text-blue-100" : "text-gray-500"
+                        msg.sender === "user"
+                          ? "text-blue-100"
+                          : "text-gray-500"
                       )}
                     >
                       {new Date(msg.timestamp).toLocaleString()}
@@ -329,15 +375,15 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
                 <p className="text-sm text-gray-500 mb-1">Selected files:</p>
                 <div className="flex flex-wrap gap-2">
                   {selectedFiles.map((file, index) => (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       className="flex items-center bg-gray-100 rounded-md px-2 py-1 text-sm"
                     >
                       {getFileIcon(file.name)}
                       <span className="mx-1 max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap">
                         {file.name}
                       </span>
-                      <button 
+                      <button
                         onClick={() => removeFile(index)}
                         className="text-gray-500 hover:text-red-500"
                       >
@@ -351,10 +397,10 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
 
             {/* Message input */}
             <div className="flex items-center gap-2 mt-2">
-              <Button 
-                type="button" 
-                variant="outline" 
-                size="icon" 
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
                 onClick={handleAttachClick}
                 className="flex-shrink-0"
               >
@@ -365,13 +411,16 @@ const SupportTicketDialog = ({ isOpen, onOpenChange }: SupportTicketDialogProps)
                 placeholder="Type a message..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                 className="flex-1"
               />
-              <Button 
-                type="button" 
+              <Button
+                type="button"
                 onClick={handleSendMessage}
-                disabled={isSendingMessage || (!newMessage.trim() && selectedFiles.length === 0)}
+                disabled={
+                  isSendingMessage ||
+                  (!newMessage.trim() && selectedFiles.length === 0)
+                }
                 className="flex-shrink-0 bg-blue-600 hover:bg-blue-700"
               >
                 <Send className="h-4 w-4" />

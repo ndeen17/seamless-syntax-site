@@ -1,17 +1,25 @@
-
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Wallet } from 'lucide-react';
 
 const WalletButton: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleWalletAccess = () => {
+    navigate("/wallet");
+  };
+
   return (
-    <Link to="/wallet">
-      <Button variant="ghost" size="sm" className="flex items-center text-blue-600 hover:text-blue-800">
-        <Wallet className="h-4 w-4 mr-1" />
-        <span className="hidden sm:inline">Wallet</span>
-      </Button>
-    </Link>
+    <Button
+      variant="ghost"
+      size="sm"
+      className="flex items-center text-blue-600 hover:text-blue-800"
+      onClick={handleWalletAccess}
+    >
+      <Wallet className="h-4 w-4 mr-1" />
+      <span className="hidden sm:inline">Wallet</span>
+    </Button>
   );
 };
 
