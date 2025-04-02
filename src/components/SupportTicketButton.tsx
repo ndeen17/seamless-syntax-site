@@ -1,5 +1,6 @@
+
 import React from "react";
-import { Link } from "react-router-dom"; // Import Link instead of using state for dialogs
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { MessageCircleQuestion } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -8,7 +9,7 @@ const SupportTicketButton: React.FC = () => {
   const isMobile = useIsMobile();
 
   return (
-    <Link to="/ticket"> {/* Ensure your route for TicketPage is defined */}
+    <Link to="/tickets">
       <Button 
         variant="ghost" 
         size={isMobile ? "icon" : "sm"} 

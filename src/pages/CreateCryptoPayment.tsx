@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { loadStripe } from '@stripe/stripe-js';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,8 +9,6 @@ import { toast } from "sonner";
 import UserHeader from '@/components/UserHeader';
 import Footer from '@/components/Footer';
 import { PAYMENT_ENDPOINTS } from '@/config/api';
-
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
 
 // Helper function for API requests
 const apiRequest = async (url: string, method: string, data?: any) => {
@@ -42,12 +39,10 @@ const apiRequest = async (url: string, method: string, data?: any) => {
   }
 };
 
-const CreateCurrencyPayment = () => {
+const CreateCryptoPayment = () => {
   const [amount, setAmount] = useState<string>('');
-  const [currency, setCurrency] = useState<string>('USD');
-  const [description, setDescription] = useState<string>('Wallet funding');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [paymentType, setPaymentType] = useState<string>('wallet_funding');
+  const [description, setDescription] = useState<string>('Wallet funding with cryptocurrency');
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -62,7 +57,7 @@ const CreateCurrencyPayment = () => {
     }
   }, [userId, navigate]);
 
-  const handleCreatePayment = async (e: React.FormEvent) => {
+  const handleCreateCryptoPayment = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!amount || parseFloat(amount) <= 0) {
@@ -74,40 +69,36 @@ const CreateCurrencyPayment = () => {
     
     try {
       const paymentData = {
-        amount: parseFloat(amount),
-        currency,
-        description,
-        payment_method_types: ["card"],
-        userId,
-        payment_type: paymentType
+        price_amount: parseFloat(amount),
+        order_id: `wallet-${userId}-${Date.now()}`,
+        order_description: description || 'Wallet funding with cryptocurrency'
       };
       
-      const response = await apiRequest(PAYMENT_ENDPOINTS.CREATE_CURRENCY, 'POST', paymentData);
+      const response = await apiRequest(PAYMENT_ENDPOINTS.CREATE_CRYPTO, 'POST', paymentData);
       
-      if (response.sessionId) {
+      if (response.data) {
         // Save payment details in localStorage for reference
-        localStorage.setItem('pendingPayment', JSON.stringify({
-          payment_type: paymentType,
+        localStorage.setItem('pendingCryptoPayment', JSON.stringify({
+          payment_type: 'wallet_funding',
           payment_status: 'pending',
-          payment_gateway: 'stripe',
+          payment_gateway: 'crypto',
           amount,
           transaction_type: 'deposit',
-          user_id: userId
+          user_id: userId,
+          payment_data: response.data
         }));
         
-        // Redirect to Stripe checkout
-        const stripe = await stripePromise;
-        if (stripe) {
-          await stripe.redirectToCheckout({
-            sessionId: response.sessionId
-          });
+        // Redirect to the crypto checkout URL or payment page
+        if (response.data.payment_url) {
+          window.location.href = response.data.payment_url;
         } else {
-          throw new Error("Failed to load Stripe");
+          // If no direct URL is provided, navigate to a local page that will handle the checkout
+          navigate('/crypto-checkout', { state: { paymentData: response.data } });
         }
       }
     } catch (error) {
-      console.error('Payment creation error:', error);
-      toast.error("Failed to create payment. Please try again.");
+      console.error('Crypto payment creation error:', error);
+      toast.error("Failed to create crypto payment. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -121,16 +112,16 @@ const CreateCurrencyPayment = () => {
         <div className="max-w-md mx-auto">
           <Card>
             <CardHeader>
-              <CardTitle>Add Funds via Credit Card</CardTitle>
+              <CardTitle>Add Funds via Cryptocurrency</CardTitle>
               <CardDescription>
-                Securely add funds to your wallet using Stripe
+                Securely add funds to your wallet using cryptocurrency
               </CardDescription>
             </CardHeader>
             
-            <form onSubmit={handleCreatePayment}>
+            <form onSubmit={handleCreateCryptoPayment}>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="amount">Amount</Label>
+                  <Label htmlFor="amount">Amount (USD)</Label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
                       $
@@ -138,7 +129,7 @@ const CreateCurrencyPayment = () => {
                     <Input
                       id="amount"
                       type="number"
-                      min="1"
+                      min="5"
                       step="0.01"
                       placeholder="0.00"
                       value={amount}
@@ -147,30 +138,30 @@ const CreateCurrencyPayment = () => {
                       required
                     />
                   </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="currency">Currency</Label>
-                  <select
-                    id="currency"
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                    className="w-full p-2 rounded-md border border-gray-200"
-                  >
-                    <option value="USD">USD - US Dollar</option>
-                    <option value="EUR">EUR - Euro</option>
-                    <option value="GBP">GBP - British Pound</option>
-                  </select>
+                  <p className="text-xs text-gray-500">Minimum amount: $5.00</p>
                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="description">Description (Optional)</Label>
                   <Input
                     id="description"
-                    placeholder="Wallet funding"
+                    placeholder="Wallet funding with cryptocurrency"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   />
+                </div>
+                
+                <div className="rounded-md bg-blue-50 p-4">
+                  <div className="flex">
+                    <div className="text-sm text-blue-700">
+                      <p className="font-medium">Cryptocurrency payment information</p>
+                      <ul className="mt-1 list-disc list-inside">
+                        <li>Pay with Bitcoin, Ethereum, Litecoin, and more</li>
+                        <li>Instant conversion to USD at current market rates</li>
+                        <li>Funds will be available in your wallet after confirmation</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
               
@@ -187,7 +178,7 @@ const CreateCurrencyPayment = () => {
                   disabled={isLoading}
                   className="bg-blue-600 hover:bg-blue-700"
                 >
-                  {isLoading ? "Processing..." : "Proceed to Payment"}
+                  {isLoading ? "Processing..." : "Continue with Crypto Payment"}
                 </Button>
               </CardFooter>
             </form>
@@ -200,4 +191,4 @@ const CreateCurrencyPayment = () => {
   );
 };
 
-export default CreateCurrencyPayment;
+export default CreateCryptoPayment;

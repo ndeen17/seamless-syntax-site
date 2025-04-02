@@ -15,6 +15,16 @@ interface CloseTicketData {
   reason?: string;
 }
 
+interface Ticket {
+  id: string;
+  subject: string;
+  status: 'open' | 'closed';
+  category: string;
+  createdAt: string;
+  updatedAt: string;
+  unreadCount: number;
+}
+
 // Helper function for API requests with environment-aware logging
 const apiRequest = async (url: string, method: string, data?: any) => {
   try {
@@ -60,6 +70,26 @@ export const ticketService = {
       return response;
     } catch (error) {
       toast.error("Failed to create support ticket");
+      throw error;
+    }
+  },
+  
+  getTicket: async (ticketId: string) => {
+    try {
+      const response = await apiRequest(`${TICKET_ENDPOINTS.GET}/${ticketId}`, 'GET');
+      return response.ticket;
+    } catch (error) {
+      toast.error("Failed to fetch ticket details");
+      throw error;
+    }
+  },
+  
+  getUserTickets: async (userId: string) => {
+    try {
+      const response = await apiRequest(TICKET_ENDPOINTS.LIST, 'POST', { user_id: userId });
+      return response.tickets;
+    } catch (error) {
+      toast.error("Failed to fetch tickets");
       throw error;
     }
   },

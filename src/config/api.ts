@@ -26,7 +26,11 @@ export const USER_ENDPOINTS = {
 // Ticket endpoints
 export const TICKET_ENDPOINTS = {
   CREATE: `${API_BASE_URL}/create-ticket`,
+  GET: `${API_BASE_URL}/ticket`,
+  LIST: `${API_BASE_URL}/tickets`,
+  UPDATE: `${API_BASE_URL}/update-ticket`,
   CLOSE: `${API_BASE_URL}/close-ticket`,
+  ASSIGN: `${API_BASE_URL}/assign-ticket`,
 };
 
 // Message endpoints
