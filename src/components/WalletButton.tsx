@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,7 @@ const WalletButton: React.FC = () => {
       onClick={handleWalletAccess}
     >
       <Wallet className="h-4 w-4 mr-1" />
-      <span className="hidden sm:inline">Wallet</span>
+      <span className="hidden sm:inline">My Wallet</span>
     </Button>
   );
 };

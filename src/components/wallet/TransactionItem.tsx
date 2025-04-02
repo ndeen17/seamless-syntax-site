@@ -1,18 +1,13 @@
 
 import React from 'react';
 import { ArrowUpRight, ArrowDownLeft, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Transaction } from '@/types/wallet';
 
-interface Transaction {
-  id: string;
-  type: 'deposit' | 'withdrawal' | 'transfer';
-  amount: number;
-  currency: string;
-  status: 'pending' | 'completed' | 'failed';
-  date: string;
-  description?: string;
+interface TransactionItemProps {
+  transaction: Transaction;
 }
 
-const TransactionItem: React.FC<{ transaction: Transaction }> = ({ transaction }) => {
+const TransactionItem: React.FC<TransactionItemProps> = ({ transaction }) => {
   const statusIcon = {
     pending: <Clock className="h-4 w-4 text-amber-500" />,
     completed: <CheckCircle className="h-4 w-4 text-green-500" />,
@@ -42,8 +37,13 @@ const TransactionItem: React.FC<{ transaction: Transaction }> = ({ transaction }
             {transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
           </h4>
           <p className="text-sm text-gray-500">
-            {transaction.description || `${transaction.type} transaction`}
+            {transaction.description || transaction.ref || `${transaction.type} transaction`}
           </p>
+          {transaction.payment_gateway && (
+            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+              {transaction.payment_gateway}
+            </span>
+          )}
         </div>
       </div>
       <div className="text-right">

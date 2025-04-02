@@ -2,17 +2,40 @@
 import axios from 'axios';
 import { API_BASE_URL } from '@/config/api';
 
-export const PAYMENT_ENDPOINTS = {
-  CREATE_CRYPTO: `${API_BASE_URL}/create-crypto-payment`,
-  CREATE_CURRENCY: `${API_BASE_URL}/create-currency-payment`,
-  STATUS: (id: string) => `${API_BASE_URL}/payment/${id}/status`,
-  USER_PAYMENTS: (userId: string) => `${API_BASE_URL}/user/${userId}/payments`,
-  IPN: `${API_BASE_URL}/ipn`,
-};
+export interface CryptoPaymentRequest {
+  price_amount: number;
+  order_id: string;
+  order_description: string;
+}
 
-export const createCryptoPayment = async (paymentData: any) => {
+export interface CurrencyPaymentRequest {
+  amount: number;
+  currency: string;
+  description: string;
+  payment_method_types: string[];
+}
+
+export interface PaymentSaveRequest {
+  payment_type: 'order' | 'wallet_funding';
+  payment_status: 'pending' | 'completed';
+  payment_gateway: 'stripe' | 'crypto currency' | 'wallet';
+  amount: number;
+  transaction_type: 'deposit' | 'order';
+  ref: string;
+  user_id: string;
+}
+
+export interface PaymentResponse {
+  message: string;
+  data?: any;
+  status?: string;
+  sessionId?: string;
+  error?: string;
+}
+
+export const createCryptoPayment = async (paymentData: CryptoPaymentRequest): Promise<PaymentResponse> => {
   try {
-    const response = await axios.post(PAYMENT_ENDPOINTS.CREATE_CRYPTO, paymentData);
+    const response = await axios.post(`${API_BASE_URL}/payments/create-crypto-payment`, paymentData);
     return response.data;
   } catch (error) {
     console.error('Error creating crypto payment:', error);
@@ -20,9 +43,9 @@ export const createCryptoPayment = async (paymentData: any) => {
   }
 };
 
-export const createCurrencyPayment = async (paymentData: any) => {
+export const createCurrencyPayment = async (paymentData: CurrencyPaymentRequest): Promise<PaymentResponse> => {
   try {
-    const response = await axios.post(PAYMENT_ENDPOINTS.CREATE_CURRENCY, paymentData);
+    const response = await axios.post(`${API_BASE_URL}/payments/create-currency-payment`, paymentData);
     return response.data;
   } catch (error) {
     console.error('Error creating currency payment:', error);
@@ -30,9 +53,9 @@ export const createCurrencyPayment = async (paymentData: any) => {
   }
 };
 
-export const getPaymentStatus = async (paymentId: string) => {
+export const getPaymentStatus = async (paymentId: string): Promise<PaymentResponse> => {
   try {
-    const response = await axios.get(PAYMENT_ENDPOINTS.STATUS(paymentId));
+    const response = await axios.get(`${API_BASE_URL}/payments/payment/${paymentId}/status`);
     return response.data;
   } catch (error) {
     console.error('Error getting payment status:', error);
@@ -40,12 +63,22 @@ export const getPaymentStatus = async (paymentId: string) => {
   }
 };
 
-export const getUserPayments = async (userId: string) => {
+export const getUserPayments = async (userId: string): Promise<{ payments: any[] }> => {
   try {
-    const response = await axios.get(PAYMENT_ENDPOINTS.USER_PAYMENTS(userId));
+    const response = await axios.get(`${API_BASE_URL}/payments/${userId}/payments`);
     return response.data;
   } catch (error) {
     console.error('Error getting user payments:', error);
+    throw error;
+  }
+};
+
+export const savePaymentDetails = async (paymentData: PaymentSaveRequest): Promise<PaymentResponse> => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/payments`, paymentData);
+    return response.data;
+  } catch (error) {
+    console.error('Error saving payment details:', error);
     throw error;
   }
 };

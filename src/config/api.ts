@@ -1,6 +1,7 @@
 
 // Base API URL - reading from environment variable with fallback
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://aitool.asoroautomotive.com/api'
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://aitool.asoroautomotive.com/api';
+
 // Auth endpoints
 export const AUTH_ENDPOINTS = {
   SIGNUP: `${API_BASE_URL}/user-signup`,
@@ -62,9 +63,10 @@ export const WALLET_ENDPOINTS = {
 
 // Payment endpoints
 export const PAYMENT_ENDPOINTS = {
-  CREATE_CRYPTO: `${API_BASE_URL}/create-crypto-payment`,
-  CREATE_CURRENCY: `${API_BASE_URL}/create-currency-payment`,
-  STATUS: (id: string) => `${API_BASE_URL}/payment/${id}/status`,
-  USER_PAYMENTS: (userId: string) => `${API_BASE_URL}/user/${userId}/payments`,
-  IPN: `${API_BASE_URL}/ipn`,
+  CREATE_CRYPTO: `${API_BASE_URL}/payments/create-crypto-payment`,
+  CREATE_CURRENCY: `${API_BASE_URL}/payments/create-currency-payment`,
+  STATUS: (id: string) => `${API_BASE_URL}/payments/payment/${id}/status`,
+  USER_PAYMENTS: (userId: string) => `${API_BASE_URL}/payments/${userId}/payments`,
+  IPN: `${API_BASE_URL}/payments/ipn`,
+  SAVE: `${API_BASE_URL}/payments`,
 };
