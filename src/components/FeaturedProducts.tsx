@@ -1,20 +1,12 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  fetchFeaturedProducts,
-  Product,
-} from "@/services/digitalProductsService";
+import { fetchFeaturedProducts, Product } from "@/services/digitalProductsService";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ExternalLink, ShoppingCart } from "lucide-react";
+import { getPlatformImage } from "@/utils/platformImages";
 
 const FeaturedProducts = () => {
   const {
@@ -75,17 +67,11 @@ const FeaturedProducts = () => {
                   >
                     <div className="relative">
                       <div className="h-48 bg-muted flex items-center justify-center">
-                        {product.imageUrl ? (
-                          <img
-                            src={product.imageUrl}
-                            alt={product.platform_name}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <div className="text-muted-foreground">
-                            No image available
-                          </div>
-                        )}
+                        <img
+                          src={getPlatformImage(product.platform_name)}
+                          alt={product.platform_name}
+                          className="h-full w-full object-cover"
+                        />
                       </div>
                     </div>
                     <CardHeader className="pb-2">
@@ -127,7 +113,7 @@ const FeaturedProducts = () => {
                     </CardFooter>
                   </Card>
                 ))
-              : [] // Ensure we only process arrays
+              : []
         )}
     </div>
   );

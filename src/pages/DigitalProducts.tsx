@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, Link } from "react-router-dom";
 import { fetchAllProducts, Product } from "@/services/digitalProductsService";
+import { getPlatformImage } from "@/utils/platformImages";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -87,7 +88,6 @@ const DigitalProducts = () => {
         </div>
 
         <div className="container mx-auto px-4 py-8">
-          {/* Search and filter section */}
           <div className="flex flex-col md:flex-row gap-4 mb-8">
             <form onSubmit={handleSearch} className="flex-grow">
               <div className="relative">
@@ -124,7 +124,6 @@ const DigitalProducts = () => {
             </div>
           </div>
 
-          {/* Products listing */}
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {[...Array(8)].map((_, i) => (
@@ -195,17 +194,11 @@ const DigitalProducts = () => {
                 >
                   <div className="relative">
                     <div className="h-48 bg-muted flex items-center justify-center">
-                      {product.imageUrl ? (
-                        <img
-                          src={product.imageUrl}
-                          alt={product.platform_name + "/" + product.category}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="text-muted-foreground">
-                          No image available
-                        </div>
-                      )}
+                      <img
+                        src={getPlatformImage(product.platform_name)}
+                        alt={product.platform_name}
+                        className="h-full w-full object-cover"
+                      />
                     </div>
                   </div>
                   <CardHeader className="pb-2">
