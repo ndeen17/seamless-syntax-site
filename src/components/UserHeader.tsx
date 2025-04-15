@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ChevronDown, Menu, Globe, Flag } from 'lucide-react';
@@ -21,7 +20,7 @@ const UserHeader = () => {
           
           <div className="flex items-center space-x-2 sm:space-x-4">
             <a href="#" className="text-sm flex items-center">
-              <span className="mr-1 hidden sm:inline">@accsmarket</span>
+              <span className="mr-1 hidden sm:inline">@accountshub</span>
             </a>
             <div className="flex items-center space-x-2">
               <a href="#" className="flex items-center">

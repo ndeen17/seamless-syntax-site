@@ -8,7 +8,7 @@ import Footer from '@/components/Footer';
 
 const Index = () => {
   useEffect(() => {
-    document.title = "AccsMarket - Accounts store";
+    document.title = "Accounts Hub - Accounts store";
   }, []);
 
   return (
