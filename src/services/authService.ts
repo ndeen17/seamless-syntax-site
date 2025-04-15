@@ -53,13 +53,13 @@ const apiRequest = async (url: string, method: string, data?: any) => {
     const responseData = await response.json();
     
     // Log response in development
-    if (import.meta.env.DEV) {
-      console.log('Response:', responseData);
-    }
+    // if (import.meta.env.DEV) {
+    //   console.log('Response:', responseData);
+    // }
 
-    if (!response.ok) {
-      throw new Error(responseData.message || 'Something went wrong');
-    }
+    // if (!response.ok) {
+    //   throw new Error(responseData.message || 'Something went wrong');
+    // }
 
     return responseData;
   } catch (error) {

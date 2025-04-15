@@ -1,8 +1,7 @@
-
-import React, { useEffect, useRef } from 'react';
-import { Message } from '@/services/messageService';
-import ChatMessage from './ChatMessage';
-import ChatInput from './ChatInput';
+import React, { useEffect, useRef } from "react";
+import { Message } from "@/services/messageService";
+import ChatMessage from "./ChatMessage";
+import ChatInput from "./ChatInput";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface ChatWindowProps {
@@ -10,7 +9,7 @@ interface ChatWindowProps {
   isLoading: boolean;
   isSending: boolean;
   onSendMessage: (content: string) => Promise<void>;
-  onSendFiles: (files: File[]) => Promise<void>;
+  onSendFiles: (content: string, files: File[]) => Promise<void>;
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({
@@ -44,22 +43,30 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
             </div>
           </>
         ) : messages.length > 0 ? (
-          // Messages
-          messages.map((msg) => (
-            <ChatMessage
-              key={msg.id}
-              id={msg.id}
-              content={msg.content}
-              sender={msg.sender}
-              timestamp={msg.timestamp}
-              seen={msg.seen}
-              attachments={msg.attachments}
-            />
-          ))
+          // Messages sorted by time_received
+          [...messages]
+            .sort(
+              (a, b) =>
+                new Date(a.time_received).getTime() -
+                new Date(b.time_received).getTime()
+            )
+            .map((msg) => (
+              <ChatMessage
+                key={msg.id}
+                id={msg.id}
+                content={msg.message}
+                sender={msg.sender_id}
+                time_received={msg.time_received}
+                seen={msg.seen_by_user}
+                attachments={[]}
+              />
+            ))
         ) : (
           // No messages
           <div className="flex items-center justify-center h-full">
-            <p className="text-gray-500">No messages yet. Start the conversation!</p>
+            <p className="text-gray-500">
+              No messages yet. Start the conversation!
+            </p>
           </div>
         )}
         <div ref={messagesEndRef} />

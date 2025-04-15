@@ -78,7 +78,7 @@ const FeaturedProducts = () => {
                         {product.imageUrl ? (
                           <img
                             src={product.imageUrl}
-                            alt={product.name}
+                            alt={product.platform_name}
                             className="h-full w-full object-cover"
                           />
                         ) : (
@@ -89,9 +89,14 @@ const FeaturedProducts = () => {
                       </div>
                     </div>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-xl">{product.name}</CardTitle>
+                      <CardTitle className="text-xl">
+                        {product.platform_name}
+                      </CardTitle>
                       <p className="text-sm text-muted-foreground">
-                        Category: {platform}
+                        Category: {product.category}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Quantity: {product.stock_quantity}
                       </p>
                     </CardHeader>
                     <CardContent className="flex-grow">
@@ -104,17 +109,20 @@ const FeaturedProducts = () => {
                         {product.price}
                       </span>
                       <div className="flex gap-2">
-                        <Link
-                          to={`/digital-products/${product.id}`}
-                          className="inline-flex items-center text-xs text-muted-foreground hover:text-foreground"
-                        >
-                          <ExternalLink className="h-3 w-3 mr-1" />
-                          Details
-                        </Link>
                         <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm flex items-center">
                           <ShoppingCart className="h-4 w-4 mr-2" />
-                          Add to Cart
+                          <Link
+                            to={`/digital-products/${product.id}`}
+                            className="inline-flex items-center text-xs text-muted-foreground hover:text-foreground text-white"
+                          >
+                            {/* <ExternalLink className="h-3 w-3 mr-1" /> */}
+                            details
+                          </Link>
                         </button>
+                        {/* <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm flex items-center">
+                          <ShoppingCart className="h-4 w-4 mr-2" />
+                          Add to Cart
+                        </button> */}
                       </div>
                     </CardFooter>
                   </Card>

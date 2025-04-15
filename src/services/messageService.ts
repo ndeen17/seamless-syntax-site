@@ -3,23 +3,37 @@ import { MESSAGE_ENDPOINTS, FILE_ENDPOINTS } from '@/config/api';
 import { toast } from "sonner";
 
 export interface Message {
+  // id: string;
+  // ticket_id: string;
+  // content: string;
+  // sender: 'user' | 'admin';
+  // timestamp: string;
+  // seen: boolean;
+  // attachments?: string[];
   id: string;
-  ticketId: string;
-  content: string;
-  sender: 'user' | 'admin';
-  timestamp: string;
-  seen: boolean;
-  attachments?: string[];
+  message: string;
+  ticket_id: string;
+  message_type: string;
+  sender_id: string;
+  admin_id: string;
+  time_received: string;
+  seen_by_admin: number;
+  seen_by_user: number;
 }
 
 interface SendMessageParams {
-  ticketId: string;
-  content: string;
+  // ticket_id: string;
+  // content: string;
   attachments?: File[];
+  message:string, 
+  ticket_id:string, 
+  message_type:string, 
+  sender_id:string,
+  admin_id:string
 }
 
 interface FetchMessagesParams {
-  ticketId: string;
+  ticket_id: string;
 }
 
 // Helper function for API requests with environment-aware logging
@@ -66,15 +80,27 @@ const apiRequest = async (url: string, method: string, data?: any) => {
 };
 
 // File upload service
-export const uploadFiles = async (files: File[]): Promise<string[]> => {
+export const uploadFiles = async (
+  files: File[],
+  senderId: string,
+  receiverId: string,
+  ticketId: string,
+  // message:string
+): Promise<string[]> => {
   try {
     const formData = new FormData();
-    files.forEach(file => formData.append('files', file));
-    
-    const response = await apiRequest(FILE_ENDPOINTS.UPLOAD, 'POST', formData);
+    files.forEach((file) => formData.append("files", file));
+    // sender, ticketId, receiverId
+    // Add Idadditional data to the form
+    formData.append("senderId", senderId);
+    formData.append("receiverId", receiverId);
+    formData.append("ticketId", ticketId);
+    // formData.append("fileMessage", message);
+
+    const response = await apiRequest(FILE_ENDPOINTS.UPLOAD, "POST", formData);
     return response.fileUrls;
   } catch (error) {
-    console.error('File upload error:', error);
+    console.error("File upload error:", error);
     toast.error("Failed to upload files");
     throw error;
   }
@@ -82,31 +108,46 @@ export const uploadFiles = async (files: File[]): Promise<string[]> => {
 
 // Message service functions
 export const messageService = {
-  sendMessage: async ({ ticketId, content, attachments }: SendMessageParams): Promise<Message> => {
+  sendMessage: async ({message, ticket_id, message_type, sender_id, admin_id, attachments }: SendMessageParams): Promise<Message> => {
     try {
       // Upload files first if any
       let fileUrls: string[] = [];
       if (attachments && attachments.length > 0) {
-        fileUrls = await uploadFiles(attachments);
+        fileUrls = await uploadFiles(attachments, sender_id, admin_id, ticket_id);
+        return;
+      }else if (attachments && attachments.length > 0 && message !=="") {
+        fileUrls = await uploadFiles(attachments, sender_id, admin_id, ticket_id);
+        const response = await apiRequest(MESSAGE_ENDPOINTS.SEND_USER, 'POST', {
+          message, 
+          ticket_id, 
+          message_type, 
+          sender_id,
+          admin_id,
+          attachments: fileUrls
+        });
+        return response.message; 
+      }else{
+        const response = await apiRequest(MESSAGE_ENDPOINTS.SEND_USER, 'POST', {
+          message, 
+          ticket_id, 
+          message_type, 
+          sender_id,
+          admin_id,
+          attachments: fileUrls
+        });
+        return response.message; 
       }
-      
-      const response = await apiRequest(MESSAGE_ENDPOINTS.SEND_USER, 'POST', {
-        ticketId,
-        content,
-        attachments: fileUrls
-      });
-      
-      return response.message;
     } catch (error) {
       toast.error("Failed to send message");
       throw error;
     }
   },
   
-  fetchMessages: async ({ ticketId }: FetchMessagesParams): Promise<Message[]> => {
+  fetchMessages: async ({ ticket_id }: FetchMessagesParams): Promise<Message[]> => {
     try {
-      const response = await apiRequest(MESSAGE_ENDPOINTS.FETCH_PER_TICKET, 'POST', { ticketId });
-      return response.messages;
+      const response = await apiRequest(MESSAGE_ENDPOINTS.FETCH_PER_TICKET, 'POST', { ticket_id });
+      // console.log(response)
+      return response.result;
     } catch (error) {
       toast.error("Failed to fetch messages");
       throw error;

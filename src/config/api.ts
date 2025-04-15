@@ -1,5 +1,6 @@
 
 // Base API URL - reading from environment variable with fallback
+// export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://aitool.asoroautomotive.com/api';
 
 // Auth endpoints
@@ -14,7 +15,7 @@ export const AUTH_ENDPOINTS = {
   VERIFY_USER: `${API_BASE_URL}/verifyUser`,
   VERIFY_PASSWORD_CHANGE: `${API_BASE_URL}/verifyPasswordChange`,
 };
-
+ 
 // User endpoints
 export const USER_ENDPOINTS = {
   GET_ALL: `${API_BASE_URL}/users`,
@@ -28,6 +29,7 @@ export const TICKET_ENDPOINTS = {
   CREATE: `${API_BASE_URL}/create-ticket`,
   GET: `${API_BASE_URL}/ticket`,
   LIST: `${API_BASE_URL}/tickets`,
+  GET_BY_ID: (id: string) => `${API_BASE_URL}/tickets/user/${id}`,
   UPDATE: `${API_BASE_URL}/update-ticket`,
   CLOSE: `${API_BASE_URL}/close-ticket`,
   ASSIGN: `${API_BASE_URL}/assign-ticket`,

@@ -5,7 +5,7 @@ import { API_BASE_URL } from '@/config/api';
 export const ORDER_ENDPOINTS = {
   CREATE: `${API_BASE_URL}/create-order`,
   GET: (id: string) => `${API_BASE_URL}/order/${id}`,
-  LIST: `${API_BASE_URL}/orders`,
+  LIST:(id: string) => `${API_BASE_URL}/orders/user/${id}`,
   UPDATE: `${API_BASE_URL}/update-order`,
   DELETE: (id: string) => `${API_BASE_URL}/order/${id}`,
 };
@@ -30,9 +30,9 @@ export const getOrder = async (orderId: string) => {
   }
 };
 
-export const getOrders = async () => {
+export const getOrders = async (userId: string) => {
   try {
-    const response = await axios.get(ORDER_ENDPOINTS.LIST);
+    const response = await axios.get(ORDER_ENDPOINTS.LIST(userId));
     return response.data;
   } catch (error) {
     console.error('Error fetching orders:', error);

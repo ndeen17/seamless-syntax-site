@@ -1,11 +1,41 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
+import { useAuth } from "@/contexts/AuthContext";
 import Footer from "@/components/Footer";
 import FeaturedProducts from "@/components/FeaturedProducts";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 
 const GuestHomePage: React.FC = () => {
+  const [status, setstatus] = React.useState(false);
+  const { checkAuthStatus } = useAuth();
+  const navigate = useNavigate(); // Initialize the navigate hook
+
+  useEffect(() => {
+    const fetchAuthStatus = async () => {
+      try {
+        const response = await checkAuthStatus();
+        // console.log(response);
+        if (response.message === "Please log in again.") {
+          setstatus(false);
+        } else {
+          setstatus(true);
+        }
+      } catch (error) {
+        console.error("Error in fetching auth status:", error);
+      }
+    };
+
+    fetchAuthStatus();
+  }, []);
+
+  useEffect(() => {
+    if (!status) {
+      navigate("/"); // Redirect to the visitors' page
+    }
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
@@ -22,7 +52,7 @@ const GuestHomePage: React.FC = () => {
           </h2>
           <FeaturedProducts />
           <div className="flex justify-center mt-8">
-            <Link to="/products">
+            <Link to="/digital-products">
               <Button variant="default">View All Products</Button>
             </Link>
           </div>

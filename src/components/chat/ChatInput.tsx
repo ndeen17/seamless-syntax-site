@@ -1,29 +1,63 @@
-
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Paperclip, Send, X } from 'lucide-react';
-import { getFileIcon } from '@/utils/fileHelpers';
+import { Paperclip, Send, X } from "lucide-react";
+import { getFileIcon } from "@/utils/fileHelpers";
+import { useParams } from "react-router-dom";
+import { authService } from "@/services/authService";
+import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ChatInputProps {
   onSendMessage: (content: string) => Promise<void>;
-  onSendFiles: (files: File[]) => Promise<void>;
+  onSendFiles: (
+    content: string,
+    files: File[],
+    senderId: string,
+    receiverId: string,
+    ticketId: string
+  ) => Promise<void>;
   isSending: boolean;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, onSendFiles, isSending }) => {
+const ChatInput: React.FC<ChatInputProps> = ({
+  onSendMessage,
+  onSendFiles,
+  isSending,
+}) => {
   const [message, setMessage] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { ticketId } = useParams<{ ticketId: string }>();
+  const [userId, setUserId] = useState<string | null>(null);
+  const { checkAuthStatus, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    const fetchAuthStatus = async () => {
+      try {
+        const response = await checkAuthStatus();
+        // console.log(response);
+        if (response.message === "Please log in again.") {
+          setUserId("");
+        } else {
+          setUserId(response.id);
+        }
+      } catch (error) {
+        console.error("Error in fetching auth status:", error);
+      }
+    };
+
+    fetchAuthStatus();
+  }, []);
 
   const handleSendMessage = async () => {
     if (!message.trim() && selectedFiles.length === 0) return;
-    
+
     if (selectedFiles.length > 0) {
-      await onSendFiles(selectedFiles);
+      await onSendFiles(message, selectedFiles, userId, "admin", ticketId);
       setSelectedFiles([]);
     }
-    
+
     if (message.trim()) {
       await onSendMessage(message);
       setMessage("");
@@ -31,7 +65,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, onSendFiles, isSen
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
@@ -40,7 +74,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, onSendFiles, isSen
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
-      setSelectedFiles(prev => [...prev, ...filesArray]);
+      console.log(filesArray);
+      setSelectedFiles((prev) => [...prev, ...filesArray]);
     }
   };
 
@@ -49,7 +84,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, onSendFiles, isSen
   };
 
   const removeFile = (index: number) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
@@ -90,7 +125,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, onSendFiles, isSen
         >
           <Paperclip className="h-4 w-4" />
         </Button>
-        
+
         <Input
           type="text"
           placeholder="Type your message..."
@@ -100,16 +135,18 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, onSendFiles, isSen
           className="flex-1"
           disabled={isSending}
         />
-        
+
         <Button
           type="button"
           onClick={handleSendMessage}
-          disabled={isSending || (!message.trim() && selectedFiles.length === 0)}
+          disabled={
+            isSending || (!message.trim() && selectedFiles.length === 0)
+          }
           className="flex-shrink-0 bg-blue-600 hover:bg-blue-700"
         >
           <Send className="h-4 w-4" />
         </Button>
-        
+
         <input
           type="file"
           ref={fileInputRef}

@@ -5,9 +5,9 @@ import { toast } from "sonner";
 interface TicketData {
   subject: string;
   message: string;
-  category?: string;
+  category: string;
   attachments?: File[];
-  user_id?: string;
+  user_id: string;
 }
 
 interface CloseTicketData {
@@ -65,8 +65,9 @@ const apiRequest = async (url: string, method: string, data?: any) => {
 export const ticketService = {
   createTicket: async (data: TicketData) => {
     try {
+      console.log(data)
       const response = await apiRequest(TICKET_ENDPOINTS.CREATE, 'POST', data);
-      toast.success("Support ticket created successfully");
+      // toast.success("Support ticket created successfully");
       return response;
     } catch (error) {
       toast.error("Failed to create support ticket");
@@ -83,16 +84,29 @@ export const ticketService = {
       throw error;
     }
   },
-  
+
   getUserTickets: async (userId: string) => {
     try {
-      const response = await apiRequest(TICKET_ENDPOINTS.LIST, 'POST', { user_id: userId });
-      return response.tickets;
-    } catch (error) {
-      toast.error("Failed to fetch tickets");
+      const response = await apiRequest(
+        TICKET_ENDPOINTS.GET_BY_ID(userId), // Use the GET_BY_ID function
+        "GET"
+      );
+      return response.ticket;
+    } catch (error: any) {
+      toast.error(error.message || "Failed to fetch tickets");
       throw error;
     }
   },
+
+  // getUserTickets: async (userId: string) => {
+  //   try {
+  //     const response = await apiRequest(TICKET_ENDPOINTS.LIST, 'POST', { user_id: userId });
+  //     return response.tickets;
+  //   } catch (error) {
+  //     toast.error("Failed to fetch tickets");
+  //     throw error;
+  //   }
+  // },
   
   closeTicket: async (data: CloseTicketData) => {
     try {

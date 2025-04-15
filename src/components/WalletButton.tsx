@@ -1,10 +1,9 @@
-
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Wallet } from 'lucide-react';
-import { getWalletBalance } from '@/services/walletService';
-import { authService } from '@/services/authService';
+import { Wallet } from "lucide-react";
+// import { getWalletBalance } from "@/services/walletService";
+import { authService } from "@/services/authService";
 
 const WalletButton: React.FC = () => {
   const navigate = useNavigate();
@@ -17,13 +16,13 @@ const WalletButton: React.FC = () => {
         setIsLoading(true);
         // Get the user's ID if they are logged in
         const user = await authService.verifyUser();
-        
-        if (user && user.id) {
-          const walletData = await getWalletBalance(user.id);
-          if (walletData) {
-            setBalance(walletData.balance);
-          }
-        }
+
+        // if (user && user.id) {
+        //   const walletData = await getWalletBalance(user.id);
+        //   if (walletData) {
+        //     setBalance(walletData.balance);
+        //   }
+        // }
       } catch (error) {
         console.error("Failed to fetch wallet balance:", error);
         // Don't show error toast here as it could be annoying on every page load
@@ -48,8 +47,11 @@ const WalletButton: React.FC = () => {
     >
       <Wallet className="h-4 w-4 mr-1" />
       <span className="hidden sm:inline">
-        {isLoading ? "Loading..." : 
-         balance !== null ? `$${balance.toFixed(2)}` : "My Wallet"}
+        {isLoading
+          ? "Loading..."
+          : balance !== null
+          ? `$${balance.toFixed(2)}`
+          : "My Wallet"}
       </span>
     </Button>
   );

@@ -12,6 +12,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  checkAuthStatus: () => Promise<any>;
   signup: (
     name: string,
     email: string,
@@ -22,6 +23,12 @@ interface AuthContextType {
   logout: () => Promise<void>;
   verifyCode: (email: string, code: string) => Promise<any>;
   forgotPassword: (email: string) => Promise<any>;
+}
+
+interface AuthResponse {
+  id: string;
+  email: string;
+  name?: string; // Add other fields if needed
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -43,24 +50,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     logout();
   };
 
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        setIsLoading(true);
-        const response = await authService.verifyUser();
-        if (response.success) {
-          setUser(response.user);
-          setIsAuthenticated(true);
-        }
-      } catch (error) {
-        console.error("Auth status check failed:", error);
-      } finally {
-        setIsLoading(false);
+  const checkAuthStatus = async (): Promise<any> => {
+    try {
+      setIsLoading(true);
+      const response: AuthResponse = await authService.verifyUser();
+      if (response.email) {
+        setUser({
+          id: response.id,
+          email: response.email,
+          name: response.name || "Unknown User", // Provide a fallback for name
+        });
+        setIsAuthenticated(true);
       }
-    };
-
-    checkAuthStatus();
-
+      return response;
+    } catch (error) {
+      console.error("Auth status check failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
+    // checkAuthStatus();
     const tokenExpiryCheck = setInterval(() => {
       const token = localStorage.getItem("authToken");
       if (token && isTokenExpired(token)) {
@@ -107,16 +117,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch("https://aitool.asoroautomotive.com/api/user-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        "https://aitool.asoroautomotive.com/api/user-login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ email, password }),
+        }
+      );
       const data = await response.json();
-      if (data.message !== "Please log in again.") {
-        setUser(data.user);                // set user
-        setIsAuthenticated(true);          // update authentication state
+      if (
+        data.message !== "Please log in again." ||
+        data.message !== "user not found" ||
+        data.message !== "incorrect password"
+      ) {
+        setUser(data.user); // set user
+        setIsAuthenticated(true); // update authentication state
         localStorage.setItem("authToken", data.token);
         toast({
           title: "Success",
@@ -216,6 +233,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         user,
         isLoading,
         isAuthenticated,
+        checkAuthStatus,
         signup,
         login,
         logout,

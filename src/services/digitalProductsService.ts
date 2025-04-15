@@ -4,9 +4,11 @@ import { API_BASE_URL } from '@/config/api';
 
 export interface Product {
   id: string;
-  name: string;
+  category: string;
+  platform_name: string;
   description: string;
   price: string;
+  stock_quantity:number;
   imageUrl?: string;
 }
 
@@ -40,7 +42,8 @@ export const fetchAllProducts = async (): Promise<Product[]> => {
 export const fetchProductDetails = async (id: string): Promise<Product> => {
   try {
     const response = await axios.get(DIGITAL_PRODUCTS_ENDPOINTS.DETAILS(id));
-    return response.data;
+    // console.log(response.data)
+    return response.data.file1;
   } catch (error) {
     console.error(`Error fetching product details for ID ${id}:`, error);
     throw error;

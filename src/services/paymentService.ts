@@ -35,7 +35,7 @@ export interface PaymentResponse {
 
 export const createCryptoPayment = async (paymentData: CryptoPaymentRequest): Promise<PaymentResponse> => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/payments/create-crypto-payment`, paymentData);
+    const response = await axios.post(`${API_BASE_URL}/create-crypto-payment`, paymentData);
     return response.data;
   } catch (error) {
     console.error('Error creating crypto payment:', error);
@@ -45,7 +45,7 @@ export const createCryptoPayment = async (paymentData: CryptoPaymentRequest): Pr
 
 export const createCurrencyPayment = async (paymentData: CurrencyPaymentRequest): Promise<PaymentResponse> => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/payments/create-currency-payment`, paymentData);
+    const response = await axios.post(`${API_BASE_URL}/create-currency-payment`, paymentData);
     return response.data;
   } catch (error) {
     console.error('Error creating currency payment:', error);
@@ -65,7 +65,7 @@ export const getPaymentStatus = async (paymentId: string): Promise<PaymentRespon
 
 export const getUserPayments = async (userId: string): Promise<{ payments: any[] }> => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/payments/${userId}/payments`);
+    const response = await axios.get(`${API_BASE_URL}/${userId}/payments`);
     return response.data;
   } catch (error) {
     console.error('Error getting user payments:', error);

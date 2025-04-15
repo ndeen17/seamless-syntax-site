@@ -1,17 +1,27 @@
-
-import React, { useState, useEffect } from 'react';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
-import { loadStripe } from '@stripe/stripe-js';
+import React, { useState, useEffect } from "react";
+import { Navigate, useNavigate, useLocation } from "react-router-dom";
+import { loadStripe } from "@stripe/stripe-js";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { toast } from "sonner";
-import UserHeader from '@/components/UserHeader';
-import Footer from '@/components/Footer';
-import { PAYMENT_ENDPOINTS } from '@/config/api';
+import UserHeader from "@/components/UserHeader";
+import Footer from "@/components/Footer";
+import { PAYMENT_ENDPOINTS } from "@/config/api";
+import { useAuth } from "@/contexts/AuthContext";
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
+// const stripePromise = loadStripe(
+//   import.meta.env.VITE_STRIPE_PUBLIC_KEY ||
+//     "pk_test_51LWkUkEAeq2MFW6f94ApFRmNkRzMr6GKJK68CoI6VDJqjBktDUEIFmtDGGdzJouthdJ7oxe4Jft0UAH1Qk9rFgmZ00uS6aMCp4"
+// );
 
 // Helper function for API requests
 const apiRequest = async (url: string, method: string, data?: any) => {
@@ -19,9 +29,9 @@ const apiRequest = async (url: string, method: string, data?: any) => {
     const options: RequestInit = {
       method,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
+      credentials: "include",
     };
 
     if (data) {
@@ -32,81 +42,104 @@ const apiRequest = async (url: string, method: string, data?: any) => {
     const responseData = await response.json();
 
     if (!response.ok) {
-      throw new Error(responseData.message || 'Something went wrong');
+      throw new Error(responseData.message || "Something went wrong");
     }
 
     return responseData;
   } catch (error) {
-    console.error('API request error:', error);
+    console.error("API request error:", error);
     throw error;
   }
 };
 
 const CreateCurrencyPayment = () => {
-  const [amount, setAmount] = useState<string>('');
-  const [currency, setCurrency] = useState<string>('USD');
-  const [description, setDescription] = useState<string>('Wallet funding');
+  const [amount, setAmount] = useState<string>("");
+  const [currency, setCurrency] = useState<string>("USD");
+  const [userId, setuserId] = useState<string>("");
+  const [description, setDescription] = useState<string>("Wallet funding");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [paymentType, setPaymentType] = useState<string>('wallet_funding');
+  const [paymentType, setPaymentType] = useState<string>("wallet_funding");
   const navigate = useNavigate();
   const location = useLocation();
-  
+  const { checkAuthStatus } = useAuth();
+
+  useEffect(() => {
+    const fetchAuthStatus = async () => {
+      try {
+        const response = await checkAuthStatus();
+        console.log("Auth status response:", response); // Log the response here
+        setuserId(response.id);
+      } catch (error) {
+        console.error("Error in fetching auth status:", error);
+      }
+    };
+
+    fetchAuthStatus();
+  }, []);
   // Get userId and other data from location state or localStorage
-  const userId = location.state?.userId || localStorage.getItem('userId') || '';
-  
+  // const userId = location.state?.userId || localStorage.getItem('userId') || '';
+
   useEffect(() => {
     // Check if user is logged in
     if (!userId) {
       toast.error("Please log in to add funds");
-      navigate('/login');
+      navigate("/login");
     }
   }, [userId, navigate]);
 
   const handleCreatePayment = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!amount || parseFloat(amount) <= 0) {
       toast.error("Please enter a valid amount");
       return;
     }
-    
+
     setIsLoading(true);
-    
+
     try {
+      const stripe = await loadStripe(
+        "pk_test_51LWkUkEAeq2MFW6f94ApFRmNkRzMr6GKJK68CoI6VDJqjBktDUEIFmtDGGdzJouthdJ7oxe4Jft0UAH1Qk9rFgmZ00uS6aMCp4"
+      );
+
+      if (!stripe) {
+        throw new Error("Failed to load Stripe");
+      }
+
       const paymentData = {
         amount: parseFloat(amount),
         currency,
         description,
         payment_method_types: ["card"],
         userId,
-        payment_type: paymentType
+        payment_type: paymentType,
       };
-      
-      const response = await apiRequest(PAYMENT_ENDPOINTS.CREATE_CURRENCY, 'POST', paymentData);
-      
+
+      const response = await apiRequest(
+        PAYMENT_ENDPOINTS.CREATE_CURRENCY,
+        "POST",
+        paymentData
+      );
+
       if (response.sessionId) {
-        // Save payment details in localStorage for reference
-        localStorage.setItem('pendingPayment', JSON.stringify({
-          payment_type: paymentType,
-          payment_status: 'pending',
-          payment_gateway: 'stripe',
-          amount,
-          transaction_type: 'deposit',
-          user_id: userId
-        }));
-        
-        // Redirect to Stripe checkout
-        const stripe = await stripePromise;
-        if (stripe) {
-          await stripe.redirectToCheckout({
-            sessionId: response.sessionId
-          });
-        } else {
-          throw new Error("Failed to load Stripe");
-        }
+        localStorage.setItem(
+          "pendingPayment",
+          JSON.stringify({
+            payment_type: paymentType,
+            payment_status: "pending",
+            payment_gateway: "stripe",
+            amount,
+            transaction_type: "deposit",
+            user_id: userId,
+          })
+        );
+
+        await stripe.redirectToCheckout({
+          sessionId: response.sessionId,
+        });
       }
     } catch (error) {
-      console.error('Payment creation error:', error);
+      console.error("Payment creation error:", error);
       toast.error("Failed to create payment. Please try again.");
     } finally {
       setIsLoading(false);
@@ -116,7 +149,7 @@ const CreateCurrencyPayment = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <UserHeader />
-      
+
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-md mx-auto">
           <Card>
@@ -126,7 +159,7 @@ const CreateCurrencyPayment = () => {
                 Securely add funds to your wallet using Stripe
               </CardDescription>
             </CardHeader>
-            
+
             <form onSubmit={handleCreatePayment}>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
@@ -148,7 +181,7 @@ const CreateCurrencyPayment = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="currency">Currency</Label>
                   <select
@@ -162,7 +195,7 @@ const CreateCurrencyPayment = () => {
                     <option value="GBP">GBP - British Pound</option>
                   </select>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="description">Description (Optional)</Label>
                   <Input
@@ -173,17 +206,17 @@ const CreateCurrencyPayment = () => {
                   />
                 </div>
               </CardContent>
-              
+
               <CardFooter className="flex justify-between">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => navigate('/wallet')}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => navigate("/wallet")}
                 >
                   Cancel
                 </Button>
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   disabled={isLoading}
                   className="bg-blue-600 hover:bg-blue-700"
                 >
@@ -194,7 +227,7 @@ const CreateCurrencyPayment = () => {
           </Card>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

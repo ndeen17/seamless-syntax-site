@@ -15,45 +15,74 @@ const LoginForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate input fields
     if (!email || !password) {
       toast({
         title: "Error",
-        description: "Please fill in all fields",
+        description: "Please fill in all fields.",
         variant: "destructive",
       });
       return;
     }
+
     setIsLoading(true);
+
     try {
-      const response = await fetch("https://aitool.asoroautomotive.com/api/user-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        "https://aitool.asoroautomotive.com/api/user-login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ email, password }),
+        }
+      );
+
       const data = await response.json();
-      // If the returned message is not "Please log in again.", it's a success
-      if (data.message !== "Please log in again.") {
+
+      // Check for success or error messages
+      if (response.ok && data.redirect === "true") {
         toast({
           title: "Success",
-          description: "Logged in successfully",
+          description: "Logged in successfully.",
           variant: "success",
         });
-        // Redirect to the signed-in homepage after 2 seconds.
+
+        // Redirect to the signed-in homepage after 2 seconds
         setTimeout(() => {
-          navigate("/user-home"); // Adjust this route if your signed-in homepage is registered elsewhere.
+          navigate("/user-home"); // Adjust this route if needed
         }, 2000);
+      } else if (data.message === "incorrect password") {
+        toast({
+          title: "Error",
+          description: "Invalid email or password. Please try again.",
+          variant: "destructive",
+        });
+      } else if (data.message === "user not found") {
+        toast({
+          title: "Error",
+          description: "No account found with this email. Please sign up.",
+          variant: "destructive",
+        });
+      } else if (data.message === "Account locked") {
+        toast({
+          title: "Error",
+          description: "Your account is locked. Please contact support.",
+          variant: "destructive",
+        });
       } else {
         toast({
           title: "Error",
-          description: data.message,
+          description: data.message || "Login failed. Please try again.",
           variant: "destructive",
         });
       }
     } catch (error: any) {
+      // Handle network or unexpected errors
       toast({
         title: "Error",
-        description: error.message || "Login failed. Please try again.",
+        description: error.message || "An unexpected error occurred.",
         variant: "destructive",
       });
       console.error("Login error:", error);
