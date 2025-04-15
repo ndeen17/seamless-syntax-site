@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import UserHeader from "@/components/UserHeader";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, MessageCircle } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Message, messageService } from "@/services/messageService";
 import { ticketService } from "@/services/ticketService";
 import { authService } from "@/services/authService";
@@ -18,7 +19,6 @@ const ChatPage: React.FC = () => {
   const [isSending, setIsSending] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [ticketSubject, setTicketSubject] = useState("Support Ticket");
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
 
   // Check authentication and load messages
   useEffect(() => {
@@ -26,7 +26,6 @@ const ChatPage: React.FC = () => {
       try {
         const user = await authService.verifyUser();
         if (user) {
-          console.log(user);
           setUserId(user.id);
           return user;
         } else {
@@ -51,7 +50,6 @@ const ChatPage: React.FC = () => {
       try {
         setIsLoading(true);
         const user = await checkAuth();
-        console.log(user);
         if (!user) return;
 
         // Fetch ticket data to get subject
@@ -72,12 +70,12 @@ const ChatPage: React.FC = () => {
         if (fetchedMessages.length === 0) {
           toast.info("No messages found for this ticket.");
         }
-        console.log(fetchedMessages);
         setMessages(fetchedMessages);
 
         // Mark unread admin messages as read
         fetchedMessages.forEach((msg) => {
-          if (msg.seen_by_user === 0 && msg.sender_id === "admin") {
+          if ((msg.seen_by_user === 0 || msg.seen === false) && 
+              (msg.sender_id === "admin" || msg.sender === "admin")) {
             messageService.markAsSeen(msg.id);
           }
         });
@@ -93,22 +91,18 @@ const ChatPage: React.FC = () => {
 
     // Set up polling for new messages every 30 seconds
     const interval = setInterval(async () => {
-      if (ticketId) {
+      if (ticketId && userId) {
         try {
           const fetchedMessages = await messageService.fetchMessages({
             ticket_id: ticketId,
           });
-          console.log(fetchedMessages);
-          // console.log(fetchedMessages)
-          if (fetchedMessages.length === 0) {
-            toast.info("No messages found for this ticket.");
-          }
 
           setMessages(fetchedMessages);
 
           // Mark unread admin messages as read
           fetchedMessages.forEach((msg) => {
-            if (msg.seen_by_user === 0 && msg.sender_id === "admin") {
+            if ((msg.seen_by_user === 0 || msg.seen === false) && 
+                (msg.sender_id === "admin" || msg.sender === "admin")) {
               messageService.markAsSeen(msg.id);
             }
           });
@@ -142,8 +136,6 @@ const ChatPage: React.FC = () => {
     }
   };
 
-  // Handle sending files
-  // Handle sending files
   const handleSendFiles = async (
     content: string,
     files: File[],
@@ -158,12 +150,15 @@ const ChatPage: React.FC = () => {
         message_type: type,
         sender_id: userId,
         admin_id: "admin",
-        attachments: files, // Directly pass the files
+        attachments: files,
       });
       toast.success("Files uploaded successfully");
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      
+      // Refresh the messages list to show the new files
+      const fetchedMessages = await messageService.fetchMessages({
+        ticket_id: ticketId,
+      });
+      setMessages(fetchedMessages);
     } catch (error) {
       console.error("Error sending files:", error);
       toast.error("Failed to send files. Please try again.");
@@ -173,53 +168,36 @@ const ChatPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md border h-[90vh] flex flex-col">
-      <div className="flex-1 overflow-y-auto">
-        {messages.length === 0 && !isLoading ? (
-          <ChatWindow
-            messages={[]}
-            isLoading={isLoading}
-            isSending={isSending}
-            onSendMessage={handleSendMessage}
-            onSendFiles={handleSendFiles}
-          />
-        ) : (
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      <UserHeader />
+      
+      <main className="container mx-auto px-4 py-8 flex-1 flex flex-col">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/tickets")}
+              className="mr-2"
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" /> Back
+            </Button>
+            <h1 className="text-xl font-bold">{ticketSubject}</h1>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-lg shadow-md border flex-1">
           <ChatWindow
             messages={messages}
             isLoading={isLoading}
             isSending={isSending}
             onSendMessage={handleSendMessage}
-            onSendFiles={handleSendFiles}
+            onSendFiles={(content, files) => handleSendFiles(content, files)}
           />
-        )}
-      </div>
-      {/* Input and Send Button */}
-      {/* <div className="p-4 border-t flex items-center">
-        <input
-          type="text"
-          placeholder="Type your message..."
-          className="flex-1 border rounded-lg px-4 py-2 mr-2"
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleSendMessage(e.currentTarget.value, "text");
-              e.currentTarget.value = ""; // Clear input after sending
-            }
-          }}
-        />
-        <Button
-          onClick={() => {
-            const input =
-              document.querySelector<HTMLInputElement>("input[type='text']");
-            if (input && input.value.trim()) {
-              handleSendMessage(input.value.trim(), "text");
-              input.value = ""; // Clear input after sending
-            }
-          }}
-          disabled={isSending}
-        >
-          Send
-        </Button>
-      </div> */}
+        </div>
+      </main>
+      
+      <Footer />
     </div>
   );
 };

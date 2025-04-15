@@ -1,29 +1,31 @@
+
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import UserHomePage from "./UserHomePage";
 import GuestHomePage from "./GuestHomePage";
 
 const HomePage: React.FC = () => {
-  const { checkAuthStatus, isAuthenticated } = useAuth();
-  const [status, setstatus] = useState(false);
+  const { checkAuthStatus } = useAuth();
+  const [status, setStatus] = useState(false);
 
   useEffect(() => {
     const fetchAuthStatus = async () => {
       try {
         const response = await checkAuthStatus();
-        // console.log(response);
         if (response.message === "Please log in again.") {
-          setstatus(false);
+          setStatus(false);
         } else {
-          setstatus(true);
+          setStatus(true);
         }
       } catch (error) {
         console.error("Error in fetching auth status:", error);
+        setStatus(false);
       }
     };
 
     fetchAuthStatus();
-  }, []);
+  }, [checkAuthStatus]);
+  
   return status ? <UserHomePage /> : <GuestHomePage />;
 };
 

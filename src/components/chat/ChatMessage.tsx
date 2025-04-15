@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+
+import React from "react";
 import { formatDistanceToNow } from "date-fns";
 import { FileText, Image } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -7,19 +8,25 @@ interface ChatMessageProps {
   id: string;
   content: string;
   sender: string;
-  time_received: string;
-  seen: number;
+  timestamp?: string;
+  time_received?: string; // Support both timestamp and time_received
+  seen?: number | boolean;
+  seen_by_user?: number;
   attachments?: string[];
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({
   content = "", // Default to an empty string
   sender,
+  timestamp,
   time_received,
   seen,
+  seen_by_user,
   attachments = [],
 }) => {
   const isUser = sender === 'user';
+  const messageTime = timestamp || time_received;
+  const isMessageSeen = seen !== undefined ? seen : seen_by_user !== undefined ? seen_by_user === 1 : false;
   
   // Determine if content is a URL (for file messages)
   const isUrl = (str: string) => {
@@ -49,11 +56,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       className={cn(
         "flex flex-col max-w-[80%] rounded-lg p-3 mb-3 relative",
         isUser
-          ? "ml-auto bg-blue-600 text-white"
-          : "mr-auto bg-gray-100 text-gray-800"
+          ? "ml-auto bg-blue-600 text-white rounded-br-none"
+          : "mr-auto bg-gray-100 text-gray-800 rounded-bl-none"
       )}
     >
-      {!seen && !isUser && (
+      {!isMessageSeen && !isUser && (
         <div
           className="absolute -left-2 top-1 h-2 w-2 rounded-full bg-red-500"
           title="New message"
@@ -93,14 +100,16 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         </div>
       )}
       
-      <div
-        className={cn(
-          "text-xs mt-1",
-          isUser ? "text-blue-100" : "text-gray-500"
-        )}
-      >
-        {formatDistanceToNow(new Date(timestamp), { addSuffix: true })}
-      </div>
+      {messageTime && (
+        <div
+          className={cn(
+            "text-xs mt-1",
+            isUser ? "text-blue-100" : "text-gray-500"
+          )}
+        >
+          {formatDistanceToNow(new Date(messageTime), { addSuffix: true })}
+        </div>
+      )}
     </div>
   );
 };

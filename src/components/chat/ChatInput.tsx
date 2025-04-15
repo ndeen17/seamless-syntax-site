@@ -1,22 +1,15 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Paperclip, Send, X } from "lucide-react";
 import { getFileIcon } from "@/utils/fileHelpers";
 import { useParams } from "react-router-dom";
-import { authService } from "@/services/authService";
-import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface ChatInputProps {
   onSendMessage: (content: string) => Promise<void>;
-  onSendFiles: (
-    content: string,
-    files: File[],
-    senderId: string,
-    receiverId: string,
-    ticketId: string
-  ) => Promise<void>;
+  onSendFiles: (content: string, files: File[]) => Promise<void>;
   isSending: boolean;
 }
 
@@ -30,13 +23,12 @@ const ChatInput: React.FC<ChatInputProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { ticketId } = useParams<{ ticketId: string }>();
   const [userId, setUserId] = useState<string | null>(null);
-  const { checkAuthStatus, isAuthenticated } = useAuth();
+  const { checkAuthStatus } = useAuth();
 
   useEffect(() => {
     const fetchAuthStatus = async () => {
       try {
         const response = await checkAuthStatus();
-        // console.log(response);
         if (response.message === "Please log in again.") {
           setUserId("");
         } else {
@@ -48,20 +40,19 @@ const ChatInput: React.FC<ChatInputProps> = ({
     };
 
     fetchAuthStatus();
-  }, []);
+  }, [checkAuthStatus]);
 
   const handleSendMessage = async () => {
     if (!message.trim() && selectedFiles.length === 0) return;
 
     if (selectedFiles.length > 0) {
-      await onSendFiles(message, selectedFiles, userId, "admin", ticketId);
+      await onSendFiles(message, selectedFiles);
       setSelectedFiles([]);
-    }
-
-    if (message.trim()) {
+    } else if (message.trim()) {
       await onSendMessage(message);
-      setMessage("");
     }
+    
+    setMessage("");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -74,7 +65,6 @@ const ChatInput: React.FC<ChatInputProps> = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
-      console.log(filesArray);
       setSelectedFiles((prev) => [...prev, ...filesArray]);
     }
   };
@@ -105,6 +95,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
                 <button
                   onClick={() => removeFile(index)}
                   className="text-gray-400 hover:text-red-500 transition-colors"
+                  type="button"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -114,7 +105,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
         </div>
       )}
 
-      <div className="flex items-center gap-2 bg-white rounded-lg">
+      <div className="flex items-center gap-2 bg-white rounded-lg border p-1">
         <Button
           type="button"
           variant="ghost"

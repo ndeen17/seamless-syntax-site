@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from "react";
 import { Message } from "@/services/messageService";
 import ChatMessage from "./ChatMessage";
@@ -46,10 +47,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
             <ChatMessage
               key={msg.id}
               id={msg.id}
-              content={msg.content}
-              sender={msg.sender}
-              timestamp={msg.timestamp}
-              seen={msg.seen}
+              content={msg.message || msg.content || ""}
+              sender={msg.sender_id || msg.sender || ""}
+              timestamp={msg.time_received || msg.timestamp}
+              seen={msg.seen_by_user || msg.seen}
               attachments={msg.attachments}
             />
           ))
