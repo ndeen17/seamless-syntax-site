@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, User, ChevronDown, Menu, Globe, Flag, X } from 'lucide-react';
@@ -61,10 +62,11 @@ const Header = () => {
           <nav className="flex items-center justify-between">
             <div className="flex items-center">
               <Link to="/" className="flex items-center text-blue-900 mr-4">
-                <span className="text-sm font-medium flex items-center">
-                  <span className="bg-indigo-900 text-white px-2 py-1 rounded mr-1">ACCOUNTS</span>
-                  <span className="hidden sm:inline text-indigo-900 font-semibold">hub</span>
-                </span>
+                <img 
+                  src="/lovable-uploads/b8bc2363-f8b3-49a4-bec6-1490e3aa106a.png" 
+                  alt="Accounts Hub Logo" 
+                  className="h-8 w-auto mr-2"
+                />
               </Link>
               
               <Sheet>
