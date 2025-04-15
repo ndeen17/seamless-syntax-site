@@ -50,7 +50,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               content={msg.message || msg.content || ""}
               sender={msg.sender_id || msg.sender || ""}
               timestamp={msg.time_received || msg.timestamp}
-              seen={msg.seen_by_user || msg.seen}
+              seen={msg.seen_by_user === 1 || msg.seen === true}
               attachments={msg.attachments}
             />
           ))

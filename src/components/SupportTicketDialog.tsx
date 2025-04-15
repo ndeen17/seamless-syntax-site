@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import {
   Dialog,
@@ -78,13 +79,14 @@ const SupportTicketDialog = ({
       const fetchTicketMessages = async () => {
         try {
           const fetchedMessages = await messageService.fetchMessages({
-            ticketId,
+            ticket_id: ticketId,
           });
           setMessages(fetchedMessages);
 
           // Mark unread messages as seen
           fetchedMessages.forEach((msg) => {
-            if (!msg.seen && msg.sender === "admin") {
+            if ((msg.seen_by_user === 0 || msg.seen === false) && 
+                (msg.sender_id === "admin" || msg.sender === "admin")) {
               messageService.markAsSeen(msg.id);
             }
           });
@@ -136,11 +138,18 @@ const SupportTicketDialog = ({
       setMessages([
         {
           id: response.messageId,
-          ticketId: response.ticketId,
+          ticket_id: response.ticketId,
+          message: message,
           content: message,
+          sender_id: "user",
           sender: "user",
+          admin_id: "admin",
+          time_received: new Date().toISOString(),
           timestamp: new Date().toISOString(),
+          seen_by_admin: 0,
+          seen_by_user: 1,
           seen: true,
+          message_type: "text"
         },
       ]);
     } catch (error) {
@@ -176,8 +185,11 @@ const SupportTicketDialog = ({
     setIsSendingMessage(true);
     try {
       const sentMessage = await messageService.sendMessage({
-        ticketId,
-        content: newMessage,
+        ticket_id: ticketId,
+        message: newMessage,
+        message_type: "text",
+        sender_id: user_id,
+        admin_id: "admin",
         attachments: selectedFiles,
       });
 
@@ -320,18 +332,19 @@ const SupportTicketDialog = ({
                     key={msg.id}
                     className={cn(
                       "flex flex-col max-w-[80%] rounded-lg p-3 relative",
-                      msg.sender === "user"
+                      (msg.sender_id === "user" || msg.sender === "user")
                         ? "ml-auto bg-blue-600 text-white"
                         : "mr-auto bg-gray-100 text-gray-800"
                     )}
                   >
-                    {!msg.seen && msg.sender === "admin" && (
+                    {(msg.seen_by_user === 0 || msg.seen === false) && 
+                    (msg.sender_id === "admin" || msg.sender === "admin") && (
                       <div
                         className="absolute -left-2 top-1 h-2 w-2 rounded-full bg-red-500"
                         title="New message"
                       ></div>
                     )}
-                    <div>{msg.content}</div>
+                    <div>{msg.message || msg.content}</div>
                     {msg.attachments && msg.attachments.length > 0 && (
                       <div className="mt-2 space-y-1">
                         {msg.attachments.map((url, idx) => (
@@ -342,7 +355,7 @@ const SupportTicketDialog = ({
                             rel="noopener noreferrer"
                             className={cn(
                               "flex items-center text-sm underline",
-                              msg.sender === "user"
+                              (msg.sender_id === "user" || msg.sender === "user")
                                 ? "text-white"
                                 : "text-blue-600"
                             )}
@@ -356,12 +369,12 @@ const SupportTicketDialog = ({
                     <div
                       className={cn(
                         "text-xs mt-1",
-                        msg.sender === "user"
+                        (msg.sender_id === "user" || msg.sender === "user")
                           ? "text-blue-100"
                           : "text-gray-500"
                       )}
                     >
-                      {new Date(msg.timestamp).toLocaleString()}
+                      {new Date(msg.time_received || msg.timestamp).toLocaleString()}
                     </div>
                   </div>
                 ))}

@@ -3,33 +3,29 @@ import { MESSAGE_ENDPOINTS, FILE_ENDPOINTS } from '@/config/api';
 import { toast } from "sonner";
 
 export interface Message {
-  // id: string;
-  // ticket_id: string;
-  // content: string;
-  // sender: 'user' | 'admin';
-  // timestamp: string;
-  // seen: boolean;
-  // attachments?: string[];
   id: string;
+  message: string;
+  content?: string; // Add content as an alias for message
+  ticket_id: string;
+  message_type: string;
+  sender_id: string;
+  sender?: string; // Add sender as an alias for sender_id
+  admin_id: string;
+  time_received: string;
+  timestamp?: string; // Add timestamp as an alias for time_received
+  seen_by_admin: number;
+  seen_by_user: number;
+  seen?: boolean; // Add seen as an alias for seen_by_user
+  attachments?: string[];
+}
+
+interface SendMessageParams {
   message: string;
   ticket_id: string;
   message_type: string;
   sender_id: string;
   admin_id: string;
-  time_received: string;
-  seen_by_admin: number;
-  seen_by_user: number;
-}
-
-interface SendMessageParams {
-  // ticket_id: string;
-  // content: string;
   attachments?: File[];
-  message:string, 
-  ticket_id:string, 
-  message_type:string, 
-  sender_id:string,
-  admin_id:string
 }
 
 interface FetchMessagesParams {
@@ -147,7 +143,17 @@ export const messageService = {
     try {
       const response = await apiRequest(MESSAGE_ENDPOINTS.FETCH_PER_TICKET, 'POST', { ticket_id });
       // console.log(response)
-      return response.result;
+      
+      // Map the messages to ensure consistent property access
+      const messages = response.result.map((msg: any) => ({
+        ...msg,
+        content: msg.message,
+        sender: msg.sender_id,
+        timestamp: msg.time_received,
+        seen: msg.seen_by_user === 1
+      }));
+      
+      return messages;
     } catch (error) {
       toast.error("Failed to fetch messages");
       throw error;
