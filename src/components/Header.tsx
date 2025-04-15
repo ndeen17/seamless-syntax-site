@@ -9,15 +9,15 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const { isAuthenticated } = useAuth(); // Check if the user is authenticated
+  const { isAuthenticated } = useAuth();
 
   return (
-    <header className="w-full bg-white">
+    <header className="w-full bg-white shadow-sm">
       {/* Top dark navbar */}
-      <div className="bg-gray-800 text-white py-2">
+      <div className="bg-gradient-to-r from-indigo-900 to-blue-900 text-white py-3">
         <div className="container mx-auto px-4 flex flex-wrap items-center justify-between gap-2">
           <div className="text-sm truncate max-w-[200px] sm:max-w-none">
-            <span>AccsMarket - Social Media Accounts Store</span>
+            <span>Accounts Hub - Social Media Accounts Store</span>
           </div>
           
           <div className="flex items-center space-x-2 sm:space-x-4">
@@ -25,7 +25,6 @@ const Header = () => {
               <span className="mr-1 hidden sm:inline">@accsmarket</span>
             </a>
             
-            {/* Show sign up and login buttons only if not authenticated */}
             {!isAuthenticated && (
               <div className="flex items-center gap-2">
                 <Link to="/signup" className="hidden sm:block">
@@ -63,12 +62,11 @@ const Header = () => {
             <div className="flex items-center">
               <Link to="/" className="flex items-center text-blue-900 mr-4">
                 <span className="text-sm font-medium flex items-center">
-                  <span className="bg-red-600 text-white px-2 py-1 rounded mr-1">ACCS</span>
-                  <span className="hidden sm:inline">market.com</span>
+                  <span className="bg-indigo-900 text-white px-2 py-1 rounded mr-1">ACCOUNTS</span>
+                  <span className="hidden sm:inline text-indigo-900 font-semibold">hub</span>
                 </span>
               </Link>
               
-              {/* Mobile menu button */}
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="md:hidden">
@@ -125,7 +123,6 @@ const Header = () => {
                 </SheetContent>
               </Sheet>
               
-              {/* Desktop navigation */}
               <div className="hidden md:flex md:items-center md:space-x-4 lg:space-x-8">
                 <SupportTicketButton />
                 
@@ -162,22 +159,20 @@ const Header = () => {
             </div>
             
             <div className="hidden md:flex md:items-center md:space-x-4">
-              {isAuthenticated && <WalletButton />} {/* Show WalletButton only if authenticated */}
+              {isAuthenticated && <WalletButton />}
               <a href="#" className="text-sm font-medium text-purple-600 hover:text-purple-700 flex items-center">
                 Become a seller
               </a>
             </div>
             
-            {/* Mobile Support Button */}
             <div className="md:hidden flex items-center space-x-2">
-              {isAuthenticated && <WalletButton />} {/* Show WalletButton only if authenticated */}
+              {isAuthenticated && <WalletButton />}
               <SupportTicketButton />
             </div>
           </nav>
         </div>
       </div>
       
-      {/* Search bar section */}
       <div className="bg-gray-100 py-3">
         <div className="container mx-auto px-4">
           <div className="flex flex-col sm:flex-row items-center gap-2">
@@ -211,7 +206,6 @@ const Header = () => {
         </div>
       </div>
       
-      {/* Blue Banner */}
       <div className="bg-blue-50 py-2 text-center text-xs sm:text-sm px-2">
         <span className="text-blue-900">Verified social media accounts with full access. Buy securely today!</span>
         <a href="#" className="ml-1 text-blue-600 hover:underline font-medium">Learn more</a>
