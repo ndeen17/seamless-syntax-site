@@ -90,23 +90,23 @@ const ChatInput: React.FC<ChatInputProps> = ({
   return (
     <div className="flex flex-col w-full">
       {selectedFiles.length > 0 && (
-        <div className="border-t border-gray-200 pt-2 px-3 mb-2">
-          <p className="text-sm text-gray-500 mb-1">Selected files:</p>
+        <div className="border border-gray-100 rounded-lg bg-gray-50 p-3 mb-3">
+          <p className="text-xs text-gray-500 mb-2">Selected files:</p>
           <div className="flex flex-wrap gap-2">
             {selectedFiles.map((file, index) => (
               <div
                 key={index}
-                className="flex items-center bg-gray-100 rounded-md px-2 py-1 text-sm"
+                className="flex items-center bg-white rounded-lg px-3 py-2 text-sm border shadow-sm"
               >
                 {getFileIcon(file.name)}
-                <span className="mx-1 max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap">
+                <span className="mx-2 max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap">
                   {file.name}
                 </span>
                 <button
                   onClick={() => removeFile(index)}
-                  className="text-gray-500 hover:text-red-500"
+                  className="text-gray-400 hover:text-red-500 transition-colors"
                 >
-                  <X className="h-3 w-3" />
+                  <X className="h-4 w-4" />
                 </button>
               </div>
             ))}
@@ -114,16 +114,16 @@ const ChatInput: React.FC<ChatInputProps> = ({
         </div>
       )}
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 bg-white rounded-lg">
         <Button
           type="button"
-          variant="outline"
+          variant="ghost"
           size="icon"
           onClick={handleAttachClick}
-          className="flex-shrink-0"
+          className="flex-shrink-0 text-gray-500 hover:text-indigo-600"
           disabled={isSending}
         >
-          <Paperclip className="h-4 w-4" />
+          <Paperclip className="h-5 w-5" />
         </Button>
 
         <Input
@@ -132,16 +132,14 @@ const ChatInput: React.FC<ChatInputProps> = ({
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="flex-1"
+          className="flex-1 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
           disabled={isSending}
         />
 
         <Button
           type="button"
           onClick={handleSendMessage}
-          disabled={
-            isSending || (!message.trim() && selectedFiles.length === 0)
-          }
+          disabled={isSending || (!message.trim() && selectedFiles.length === 0)}
           className="flex-shrink-0 bg-blue-600 hover:bg-blue-700"
         >
           <Send className="h-4 w-4" />

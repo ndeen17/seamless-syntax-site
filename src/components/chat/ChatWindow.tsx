@@ -21,16 +21,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom whenever messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-gray-50">
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {isLoading ? (
-          // Loading skeleton
           <>
             <div className="flex justify-start mb-4">
               <Skeleton className="h-24 w-2/3 rounded-lg" />
@@ -43,36 +41,27 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
             </div>
           </>
         ) : messages.length > 0 ? (
-          // Messages sorted by time_received
-          [...messages]
-            .sort(
-              (a, b) =>
-                new Date(a.time_received).getTime() -
-                new Date(b.time_received).getTime()
-            )
-            .map((msg) => (
-              <ChatMessage
-                key={msg.id}
-                id={msg.id}
-                content={msg.message}
-                sender={msg.sender_id}
-                time_received={msg.time_received}
-                seen={msg.seen_by_user}
-                attachments={[]}
-              />
-            ))
+          // Messages
+          messages.map((msg) => (
+            <ChatMessage
+              key={msg.id}
+              id={msg.id}
+              content={msg.content}
+              sender={msg.sender}
+              timestamp={msg.timestamp}
+              seen={msg.seen}
+              attachments={msg.attachments}
+            />
+          ))
         ) : (
-          // No messages
           <div className="flex items-center justify-center h-full">
-            <p className="text-gray-500">
-              No messages yet. Start the conversation!
-            </p>
+            <p className="text-gray-500">No messages yet. Start the conversation!</p>
           </div>
         )}
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-4 border-t">
+      <div className="p-4 border-t bg-white shadow-sm">
         <ChatInput
           onSendMessage={onSendMessage}
           onSendFiles={onSendFiles}
