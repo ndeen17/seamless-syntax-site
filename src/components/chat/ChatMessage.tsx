@@ -9,14 +9,14 @@ interface ChatMessageProps {
   content: string;
   sender: string;
   timestamp?: string;
-  time_received?: string; // Support both timestamp and time_received
+  time_received?: string;
   seen?: number | boolean;
   seen_by_user?: number;
   attachments?: string[];
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({
-  content = "", // Default to an empty string
+  content = "",
   sender,
   timestamp,
   time_received,
@@ -27,8 +27,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   const isUser = sender === 'user';
   const messageTime = timestamp || time_received;
   const isMessageSeen = seen !== undefined ? seen : seen_by_user !== undefined ? seen_by_user === 1 : false;
-  
-  // Determine if content is a URL (for file messages)
+
+  // Determine if content is a URL
   const isUrl = (str: string) => {
     try {
       return Boolean(new URL(str));
@@ -54,45 +54,53 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   return (
     <div
       className={cn(
-        "flex flex-col max-w-[80%] rounded-lg p-3 mb-3 relative",
+        "flex flex-col max-w-[80%] sm:max-w-[70%] rounded-lg p-3 mb-3 relative transition-all",
         isUser
-          ? "ml-auto bg-blue-600 text-white rounded-br-none"
-          : "mr-auto bg-gray-100 text-gray-800 rounded-bl-none"
+          ? "ml-auto bg-blue-600 text-white rounded-br-none hover:bg-blue-700"
+          : "mr-auto bg-gray-100 text-gray-800 rounded-bl-none hover:bg-gray-200"
       )}
     >
       {!isMessageSeen && !isUser && (
         <div
-          className="absolute -left-2 top-1 h-2 w-2 rounded-full bg-red-500"
+          className="absolute -left-2 top-1 h-2 w-2 rounded-full bg-red-500 animate-pulse"
           title="New message"
         ></div>
       )}
       
-      {content && !isUrl(content) && <div className="break-words">{content}</div>}
+      {content && !isUrl(content) && (
+        <div className="break-words text-sm sm:text-base">{content}</div>
+      )}
       
       {attachments && attachments.length > 0 && (
         <div className="mt-2 space-y-2">
           {attachments.map((url, idx) => (
             <div key={idx} className="flex flex-col">
               {isImageUrl(url) ? (
-                <a href={url} target="_blank" rel="noopener noreferrer">
+                <div className="group relative">
                   <img 
                     src={url} 
                     alt={`Attachment ${idx + 1}`} 
-                    className="max-w-full rounded max-h-[200px] object-contain"
+                    className="max-w-full rounded-md max-h-[200px] object-contain hover:opacity-95 cursor-pointer transition-all"
+                    onClick={() => window.open(url, '_blank')}
                   />
-                </a>
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all rounded-md flex items-center justify-center">
+                    <span className="opacity-0 group-hover:opacity-100 text-white text-sm">Click to view</span>
+                  </div>
+                </div>
               ) : (
                 <a
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={cn(
-                    "flex items-center text-sm underline",
-                    isUser ? "text-white" : "text-blue-600"
+                    "flex items-center text-sm p-2 rounded-md transition-colors",
+                    isUser 
+                      ? "text-white hover:bg-blue-700" 
+                      : "text-blue-600 hover:bg-gray-200"
                   )}
                 >
                   {getFileIcon(url)}
-                  <span className="ml-1">Attachment {idx + 1}</span>
+                  <span className="ml-2 underline">Attachment {idx + 1}</span>
                 </a>
               )}
             </div>
@@ -103,7 +111,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       {messageTime && (
         <div
           className={cn(
-            "text-xs mt-1",
+            "text-[10px] sm:text-xs mt-2",
             isUser ? "text-blue-100" : "text-gray-500"
           )}
         >
