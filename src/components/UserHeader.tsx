@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ChevronDown, Menu, Globe, Flag } from 'lucide-react';
@@ -43,9 +44,9 @@ const UserHeader = () => {
             <div className="flex items-center">
               <Link to="/" className="flex items-center text-blue-900 mr-4">
                 <img 
-                  src="/lovable-uploads/b8bc2363-f8b3-49a4-bec6-1490e3aa106a.png" 
+                  src="/lovable-uploads/36d5c32d-c5c1-4a34-9a8f-44c6e9c9fe20.png" 
                   alt="Accounts Hub Logo" 
-                  className="h-8 w-auto mr-2"
+                  className="h-9 w-auto mr-2"
                 />
               </Link>
               

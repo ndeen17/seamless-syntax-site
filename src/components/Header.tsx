@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, User, ChevronDown, Menu, Globe, Flag, X } from "lucide-react";
@@ -69,10 +70,11 @@ const Header = () => {
           <nav className="flex items-center justify-between">
             <div className="flex items-center">
               <Link to="/" className="flex items-center text-blue-900 mr-4">
-                <span className="text-sm font-medium flex items-center">
-                  <span className="bg-red-600 text-white px-2 py-1 rounded mr-1">ACCS</span>
-                  <span className="hidden sm:inline">market.com</span>
-                </span>
+                <img 
+                  src="/lovable-uploads/36d5c32d-c5c1-4a34-9a8f-44c6e9c9fe20.png" 
+                  alt="Accounts Hub Logo" 
+                  className="h-9 w-auto mr-2"
+                />
               </Link>
               
               {/* Mobile menu button */}
