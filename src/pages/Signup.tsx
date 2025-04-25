@@ -9,7 +9,7 @@ const Signup = () => {
   return (
     <>
       <Helmet>
-        <title>Sign Up | AccsMarket - Social Media Accounts Store</title>
+        <title>Sign Up | Account hub - Social Media Accounts Store</title>
       </Helmet>
       <AuthLayout>
         <div className="flex flex-col space-y-2 text-center">

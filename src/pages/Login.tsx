@@ -9,7 +9,7 @@ const Login = () => {
   return (
     <>
       <Helmet>
-        <title>Login | AccsMarket - Social Media Accounts Store</title>
+        <title>Login | Accounts hub - Social Media Accounts Store</title>
       </Helmet>
       <AuthLayout>
         <div className="flex flex-col space-y-2 text-center">

@@ -41,7 +41,7 @@ const GuestHomePage: React.FC = () => {
       <Header />
       <main className="flex-grow container mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold mb-4 text-center">
-          Welcome to AccsMarket
+          Welcome to Accounts hub
         </h1>
         <p className="text-center mb-8">
           Explore our products and discover amazing deals.
