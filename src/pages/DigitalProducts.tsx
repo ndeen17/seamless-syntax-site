@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, Link, useLocation } from "react-router-dom";
 import { fetchAllProducts, Product } from "@/services/digitalProductsService";
 import { getPlatformImage } from "@/utils/platformImages";
 import Header from "@/components/Header";
@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const DigitalProducts = () => {
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const searchQuery = searchParams.get("search") || "";
   const [filterQuery, setFilterQuery] = useState(searchQuery);
 
@@ -23,6 +24,16 @@ const DigitalProducts = () => {
     queryKey: ["allProducts"],
     queryFn: fetchAllProducts,
   });
+
+  // Scroll to platform section if hash is present
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.querySelector(location.hash);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location.hash, products]);
 
   // Group products by platform
   const groupedProducts = React.useMemo(() => {
@@ -102,7 +113,11 @@ const DigitalProducts = () => {
         ) : (
           <div className="space-y-6">
             {Object.entries(filteredGroups).map(([platform, platformProducts]) => (
-              <div key={platform} className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <div 
+                key={platform} 
+                id={platform.toLowerCase()} 
+                className="bg-white rounded-lg shadow-sm overflow-hidden scroll-mt-24"
+              >
                 <div className="p-4 border-b flex justify-between items-center">
                   <h2 className="text-xl font-semibold">{platform} accounts</h2>
                   <span className="text-sm text-gray-500">{platformProducts.length} total accounts</span>

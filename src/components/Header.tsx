@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, User, ChevronDown, Menu, Globe, Flag, X } from "lucide-react";
@@ -10,7 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const { isAuthenticated } = useAuth(); // Check if the user is authenticated
+  const { isAuthenticated } = useAuth();
 
   return (
     <header className="w-full bg-white shadow-sm">
@@ -26,7 +25,6 @@ const Header = () => {
               <span className="mr-1 hidden sm:inline">@accountshub</span>
             </a>
             
-            {/* Show sign up and login buttons only if not authenticated */}
             {!isAuthenticated && (
               <div className="flex items-center gap-2">
                 <Link to="/signup" className="hidden sm:block">
@@ -77,7 +75,6 @@ const Header = () => {
                 />
               </Link>
               
-              {/* Mobile menu button */}
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="md:hidden">
@@ -184,7 +181,6 @@ const Header = () => {
                 </SheetContent>
               </Sheet>
               
-              {/* Desktop navigation */}
               <div className="hidden md:flex md:items-center md:space-x-4 lg:space-x-8">
                 <SupportTicketButton />
 
@@ -200,42 +196,42 @@ const Header = () => {
                     Account Types <ChevronDown className="ml-1 h-4 w-4" />
                   </button>
                   <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-10">
-                    <a
-                      href="#"
+                    <Link
+                      to="/digital-products#instagram"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       Instagram
-                    </a>
-                    <a
-                      href="#"
+                    </Link>
+                    <Link
+                      to="/digital-products#facebook"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       Facebook
-                    </a>
-                    <a
-                      href="#"
+                    </Link>
+                    <Link
+                      to="/digital-products#twitter"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       Twitter
-                    </a>
-                    <a
-                      href="#"
+                    </Link>
+                    <Link
+                      to="/digital-products#linkedin"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       LinkedIn
-                    </a>
-                    <a
-                      href="#"
+                    </Link>
+                    <Link
+                      to="/digital-products#gmail"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       Gmail
-                    </a>
-                    <a
-                      href="#"
+                    </Link>
+                    <Link
+                      to="/digital-products#tiktok"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       TikTok
-                    </a>
+                    </Link>
                   </div>
                 </div>
 
@@ -263,22 +259,20 @@ const Header = () => {
             </div>
 
             <div className="hidden md:flex md:items-center md:space-x-4">
-              {isAuthenticated && <WalletButton />} {/* Show WalletButton only if authenticated */}
+              {isAuthenticated && <WalletButton />}
               <a href="#" className="text-sm font-medium text-purple-600 hover:text-purple-700 flex items-center">
                 Become a seller
               </a>
             </div>
             
-            {/* Mobile Support Button */}
             <div className="md:hidden flex items-center space-x-2">
-              {isAuthenticated && <WalletButton />} {/* Show WalletButton only if authenticated */}
+              {isAuthenticated && <WalletButton />}
               <SupportTicketButton />
             </div>
           </nav>
         </div>
       </div>
       
-      {/* Search bar section */}
       <div className="bg-gray-100 py-3">
         <div className="container mx-auto px-4">
           <div className="flex flex-col sm:flex-row items-center gap-2">
@@ -315,7 +309,6 @@ const Header = () => {
         </div>
       </div>
       
-      {/* Blue Banner */}
       <div className="bg-blue-50 py-2 text-center text-xs sm:text-sm px-2">
         <span className="text-blue-900">
           Verified social media accounts with full access. Buy securely today!
