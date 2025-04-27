@@ -6,10 +6,17 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SupportTicketButton from "./SupportTicketButton";
 import WalletButton from "./WalletButton";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    navigate(`/digital-products?search=${encodeURIComponent(searchQuery)}`);
+  };
 
   return (
     <header className="w-full bg-white shadow-sm">
@@ -275,17 +282,7 @@ const Header = () => {
       
       <div className="bg-gray-100 py-3">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col sm:flex-row items-center gap-2">
-            <div className="relative w-full sm:w-auto sm:flex-none mb-2 sm:mb-0">
-              <Button
-                variant="default"
-                className="bg-green-600 hover:bg-green-700 flex items-center w-full sm:w-auto justify-between"
-              >
-                <span>Social Media</span>
-                <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-
+          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row items-center gap-2">
             <div className="relative w-full">
               <div className="flex flex-col sm:flex-row w-full gap-2">
                 <div className="relative flex-grow">
@@ -295,17 +292,17 @@ const Header = () => {
                   <input
                     type="text"
                     placeholder="Search for accounts"
-                    className="w-full pl-10 pr-3 py-2 rounded-md sm:rounded-l-md sm:rounded-r-none border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600"
+                    className="w-full pl-10 pr-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-600"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
-                <Button className="bg-green-600 hover:bg-green-700 w-full sm:w-auto sm:rounded-l-none">
-                  Advanced search
+                <Button type="submit" className="bg-green-600 hover:bg-green-700 w-full sm:w-auto">
+                  Search
                 </Button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
       

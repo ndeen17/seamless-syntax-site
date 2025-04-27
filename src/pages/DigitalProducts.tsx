@@ -6,14 +6,12 @@ import { getPlatformImage } from "@/utils/platformImages";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const DigitalProducts = () => {
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const searchQuery = searchParams.get("search") || "";
-  const [filterQuery, setFilterQuery] = useState(searchQuery);
 
   const {
     data: products,
@@ -62,15 +60,15 @@ const DigitalProducts = () => {
     
     Object.entries(groupedProducts).forEach(([platform, platformProducts]) => {
       const filteredProducts = platformProducts.filter(
-        product => product.platform_name.toLowerCase().includes(filterQuery.toLowerCase()) ||
-                   product.description.toLowerCase().includes(filterQuery.toLowerCase())
+        product => product.platform_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                   product.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
       if (filteredProducts.length > 0) {
         filtered[platform] = filteredProducts;
       }
     });
     return filtered;
-  }, [groupedProducts, filterQuery]);
+  }, [groupedProducts, searchQuery]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
@@ -81,19 +79,6 @@ const DigitalProducts = () => {
           <p className="text-gray-600">
             Explore our products and discover amazing deals.
           </p>
-        </div>
-
-        <div className="mb-8">
-          <div className="relative max-w-2xl mx-auto">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full border-2 border-gray-300 rounded-lg py-2 px-4 pl-10 focus:outline-none focus:border-gray-400"
-              value={filterQuery}
-              onChange={(e) => setFilterQuery(e.target.value)}
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-          </div>
         </div>
 
         {isLoading ? (
