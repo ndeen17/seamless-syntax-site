@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, Link, useLocation } from "react-router-dom";
@@ -25,12 +24,22 @@ const DigitalProducts = () => {
     queryFn: fetchAllProducts,
   });
 
-  // Scroll to platform section if hash is present
+  // Updated scroll behavior
   useEffect(() => {
     if (location.hash) {
       const element = document.querySelector(location.hash);
       if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
+        // Add timeout to ensure DOM is ready
+        setTimeout(() => {
+          const headerOffset = 100;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+        }, 100);
       }
     }
   }, [location.hash, products]);
@@ -116,7 +125,7 @@ const DigitalProducts = () => {
               <div 
                 key={platform} 
                 id={platform.toLowerCase()} 
-                className="bg-white rounded-lg shadow-sm overflow-hidden scroll-mt-24"
+                className="bg-white rounded-lg shadow-sm overflow-hidden scroll-mt-32"
               >
                 <div className="p-4 border-b flex justify-between items-center">
                   <h2 className="text-xl font-semibold">{platform} accounts</h2>
