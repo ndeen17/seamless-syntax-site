@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, Link } from "react-router-dom";
@@ -6,21 +7,13 @@ import { getPlatformImage } from "@/utils/platformImages";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Search } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Search, Filter, ExternalLink, ShoppingCart } from "lucide-react";
 
 const DigitalProducts = () => {
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
   const [filterQuery, setFilterQuery] = useState(searchQuery);
-  const [activeCategory, setActiveCategory] = useState("all");
 
   const {
     data: products,
@@ -31,207 +24,124 @@ const DigitalProducts = () => {
     queryFn: fetchAllProducts,
   });
 
-  useEffect(() => {
-    document.title = "All Digital Products";
-    setFilterQuery(searchQuery);
-  }, [searchQuery]);
+  // Group products by platform
+  const groupedProducts = React.useMemo(() => {
+    if (!products) return {};
+    return products.reduce((acc: { [key: string]: Product[] }, product) => {
+      if (!acc[product.platform_name]) {
+        acc[product.platform_name] = [];
+      }
+      acc[product.platform_name].push(product);
+      return acc;
+    }, {});
+  }, [products]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Apply the filter from the input field
-  };
-
-  const filterProducts = (products: Product[] | undefined) => {
-    if (!products) return [];
-
-    return products.filter((product) => {
-      const matchesSearch =
-        filterQuery.trim() === "" ||
-        product.platform_name
-          .toLowerCase()
-          .includes(filterQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(filterQuery.toLowerCase());
-
-      const matchesCategory =
-        activeCategory === "all" ||
-        (product as any).category === activeCategory;
-
-      return matchesSearch && matchesCategory;
+  const filteredGroups = React.useMemo(() => {
+    if (!groupedProducts) return {};
+    const filtered: { [key: string]: Product[] } = {};
+    
+    Object.entries(groupedProducts).forEach(([platform, platformProducts]) => {
+      const filteredProducts = platformProducts.filter(
+        product => product.platform_name.toLowerCase().includes(filterQuery.toLowerCase()) ||
+                   product.description.toLowerCase().includes(filterQuery.toLowerCase())
+      );
+      if (filteredProducts.length > 0) {
+        filtered[platform] = filteredProducts;
+      }
     });
-  };
-
-  const filteredProducts = filterProducts(products);
-
-  const categories = [
-    { id: "all", name: "All" },
-    { id: "templates", name: "Templates" },
-    { id: "ebooks", name: "eBooks" },
-    { id: "courses", name: "Courses" },
-    { id: "graphics", name: "Graphics" },
-    { id: "software", name: "Software" },
-  ];
+    return filtered;
+  }, [groupedProducts, filterQuery]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-gray-100">
       <Header />
-      <main className="flex-grow">
-        <div className="bg-hero-pattern text-white py-8 md:py-12">
-          <div className="container mx-auto px-4">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center">
-              Digital Products Marketplace
-            </h1>
-            <p className="text-center text-white/80 mt-2 max-w-2xl mx-auto">
-              Browse our collection of premium digital products for creators and
-              businesses
-            </p>
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-4">Accounts hub</h1>
+          <p className="text-gray-600">
+            Explore our products and discover amazing deals.
+          </p>
+        </div>
+
+        <div className="mb-8">
+          <div className="relative max-w-2xl mx-auto">
+            <input
+              type="text"
+              placeholder="Search..."
+              className="w-full border-2 border-gray-300 rounded-lg py-2 px-4 pl-10 focus:outline-none focus:border-gray-400"
+              value={filterQuery}
+              onChange={(e) => setFilterQuery(e.target.value)}
+            />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
           </div>
         </div>
 
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
-            <form onSubmit={handleSearch} className="flex-grow">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  className="w-full border border-gray-300 rounded-md py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  value={filterQuery}
-                  onChange={(e) => setFilterQuery(e.target.value)}
-                />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+        {isLoading ? (
+          <div className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="bg-white p-4 rounded-lg shadow">
+                <Skeleton className="h-6 w-48 mb-4" />
+                <div className="space-y-2">
+                  {[...Array(3)].map((_, j) => (
+                    <Skeleton key={j} className="h-16 w-full" />
+                  ))}
+                </div>
               </div>
-            </form>
-
-            <div className="flex items-center gap-2 overflow-x-auto py-1 md:py-0">
-              <Filter className="h-5 w-5 text-gray-500 hidden md:inline" />
-              <span className="text-sm text-gray-500 whitespace-nowrap hidden md:inline">
-                Categories:
-              </span>
-
-              {categories.map((category) => (
-                <button
-                  key={category.id}
-                  onClick={() => setActiveCategory(category.id)}
-                  className={`text-sm px-3 py-1 rounded-full whitespace-nowrap ${
-                    activeCategory === category.id
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                >
-                  {category.name}
-                </button>
-              ))}
-            </div>
+            ))}
           </div>
-
-          {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {[...Array(8)].map((_, i) => (
-                <Card key={i} className="overflow-hidden border border-border">
-                  <Skeleton className="h-48 w-full" />
-                  <CardHeader className="pb-2">
-                    <Skeleton className="h-6 w-3/4 mb-2" />
-                    <Skeleton className="h-4 w-1/2" />
-                  </CardHeader>
-                  <CardContent>
-                    <Skeleton className="h-4 w-full mb-2" />
-                    <Skeleton className="h-4 w-3/4" />
-                  </CardContent>
-                  <CardFooter className="border-t pt-4 flex justify-between">
-                    <Skeleton className="h-6 w-16" />
-                    <Skeleton className="h-9 w-24" />
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          ) : error ? (
-            <Alert variant="destructive" className="mb-6">
-              <AlertDescription>
-                Unable to load products. Please try again later.
-              </AlertDescription>
-            </Alert>
-          ) : filteredProducts.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-gray-400 mb-4">
-                <svg
-                  className="w-16 h-16 mx-auto"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+        ) : error ? (
+          <Alert variant="destructive">
+            <AlertDescription>
+              Unable to load products. Please try again later.
+            </AlertDescription>
+          </Alert>
+        ) : Object.entries(filteredGroups).length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500">No products found matching your search.</p>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {Object.entries(filteredGroups).map(([platform, platformProducts]) => (
+              <div key={platform} className="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div className="p-4 border-b flex justify-between items-center">
+                  <h2 className="text-xl font-semibold">{platform} accounts</h2>
+                  <span className="text-sm text-gray-500">{platformProducts.length} total accounts</span>
+                </div>
+                <div className="divide-y">
+                  {platformProducts.map((product) => (
+                    <div
+                      key={product.id}
+                      className="p-4 hover:bg-gray-50 flex items-center justify-between transition-colors"
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                          <img
+                            src={getPlatformImage(product.platform_name)}
+                            alt={product.platform_name}
+                            className="w-6 h-6 object-contain"
+                          />
+                        </div>
+                        <div>
+                          <h3 className="font-medium">Aged accounts</h3>
+                          <p className="text-sm text-gray-500">{product.description}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <span className="text-sm text-gray-600">{product.stock_quantity} in stock</span>
+                        <Link
+                          to={`/digital-products/${product.id}`}
+                          className="px-4 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200 transition-colors"
+                        >
+                          View
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-700">
-                No products found
-              </h3>
-              <p className="text-gray-500 mt-2">
-                Try adjusting your search or filter to find what you're looking
-                for.
-              </p>
-              <button
-                onClick={() => {
-                  setFilterQuery("");
-                  setActiveCategory("all");
-                }}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-              >
-                Clear filters
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredProducts.map((product) => (
-                <Card
-                  key={product.id}
-                  className="overflow-hidden border border-border h-full flex flex-col hover:shadow-md transition-shadow"
-                >
-                  <div className="relative">
-                    <div className="h-48 bg-muted flex items-center justify-center">
-                      <img
-                        src={getPlatformImage(product.platform_name)}
-                        alt={product.platform_name}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                  </div>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-lg">
-                      {product.platform_name + "/" + product.category}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    <p className="text-muted-foreground text-sm line-clamp-3">
-                      {product.description}
-                    </p>
-                  </CardContent>
-                  <CardFooter className="border-t pt-4 flex justify-between items-center">
-                    <span className="font-semibold">{product.price}</span>
-                    <div className="flex gap-2">
-                      <Link
-                        to={`/digital-products/${product.id}`}
-                        className="inline-flex items-center text-xs text-muted-foreground hover:text-foreground"
-                      >
-                        <ExternalLink className="h-3 w-3 mr-1" />
-                        Details
-                      </Link>
-                      <button className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-md text-xs flex items-center">
-                        <ShoppingCart className="h-3 w-3 mr-1" />
-                        Add to Cart
-                      </button>
-                    </div>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </main>
       <Footer />
     </div>
