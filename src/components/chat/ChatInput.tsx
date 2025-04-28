@@ -1,11 +1,10 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Paperclip, Send, X } from "lucide-react";
 import { getFileIcon } from "@/utils/fileHelpers";
 import { useParams } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+// import { useAuth } from "@/contexts/AuthContext";
 
 interface ChatInputProps {
   onSendMessage: (content: string) => Promise<void>;
@@ -23,24 +22,24 @@ const ChatInput: React.FC<ChatInputProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { ticketId } = useParams<{ ticketId: string }>();
   const [userId, setUserId] = useState<string | null>(null);
-  const { checkAuthStatus } = useAuth();
+  // const { checkAuthStatus } = useAuth();
 
-  useEffect(() => {
-    const fetchAuthStatus = async () => {
-      try {
-        const response = await checkAuthStatus();
-        if (response.message === "Please log in again.") {
-          setUserId("");
-        } else {
-          setUserId(response.id);
-        }
-      } catch (error) {
-        console.error("Error in fetching auth status:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchAuthStatus = async () => {
+  //     try {
+  //       const response = await checkAuthStatus();
+  //       if (response.message === "Please log in again.") {
+  //         setUserId("");
+  //       } else {
+  //         setUserId(response.id);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error in fetching auth status:", error);
+  //     }
+  //   };
 
-    fetchAuthStatus();
-  }, [checkAuthStatus]);
+  //   fetchAuthStatus();
+  // }, [checkAuthStatus]);
 
   const handleSendMessage = async () => {
     if (!message.trim() && selectedFiles.length === 0) return;
@@ -51,7 +50,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
     } else if (message.trim()) {
       await onSendMessage(message);
     }
-    
+
     setMessage("");
   };
 
@@ -130,7 +129,9 @@ const ChatInput: React.FC<ChatInputProps> = ({
         <Button
           type="button"
           onClick={handleSendMessage}
-          disabled={isSending || (!message.trim() && selectedFiles.length === 0)}
+          disabled={
+            isSending || (!message.trim() && selectedFiles.length === 0)
+          }
           className="flex-shrink-0 bg-blue-600 hover:bg-blue-700"
         >
           <Send className="h-4 w-4" />

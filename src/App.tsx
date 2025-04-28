@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,6 +24,8 @@ import PaymentHistoryPage from "./pages/PaymentHistoryPage";
 import CreateCurrencyPayment from "./pages/CreateCurrencyPayment";
 import CreateCryptoPayment from "./pages/CreateCryptoPayment";
 import "./App.css";
+import SuccessPage from "./pages/successPage";
+import ErrorPage from "./pages/error";
 
 // Create a Client once for the entire application
 const queryClient = new QueryClient({
@@ -52,7 +53,7 @@ const App = () => (
               <Route path="/signup" element={<Signup />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/user-home" element={<UserHomePage />} />
-              
+
               {/* Ticket Routes */}
               <Route path="/ticket" element={<TicketPage />} />
               <Route path="/tickets" element={<TicketsListPage />} />
@@ -60,16 +61,24 @@ const App = () => (
 
               {/* Wallet Routes */}
               <Route path="/wallet" element={<WalletPage />} />
-              <Route path="/add-funds/card" element={<CreateCurrencyPayment />} />
-              <Route path="/add-funds/crypto" element={<CreateCryptoPayment />} />
+              <Route
+                path="/add-funds/card"
+                element={<CreateCurrencyPayment />}
+              />
+              <Route
+                path="/add-funds/crypto"
+                element={<CreateCryptoPayment />}
+              />
               <Route path="/payment-history" element={<PaymentHistoryPage />} />
               <Route path="/payment-success" element={<PaymentSuccessPage />} />
-              
+
               {/* Order Routes */}
               <Route path="/orders" element={<OrdersPage />} />
               <Route path="/create-order" element={<CreateOrderPage />} />
               <Route path="/order/:orderId" element={<OrderDetailPage />} />
-              
+              <Route path="/success" element={<SuccessPage />} />
+              <Route path="/error" element={<ErrorPage />} />
+
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

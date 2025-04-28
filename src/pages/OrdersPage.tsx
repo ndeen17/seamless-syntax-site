@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import OrderList from "@/components/orders/OrderList";
@@ -46,25 +46,55 @@ const OrdersPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState("");
+  const navigate = useNavigate();
 
   // Check if user is already logged in
+  // useEffect(() => {
+  //   document.title = "My Orders - AccsMarket";
+  //   const checkAuthStatus = async () => {
+  //     try {
+  //       const response = await authService.verifyUser();
+  //       if (response.id) {
+  //         // console.log(response);
+  //         setUserId(response.id);
+  //         setUserEmail(response.email);
+  //         fetchOrders(response.id);
+  //       }
+  //     } catch (error) {
+  //       console.error("Auth status check failed:", error);
+  //     }
+  //   };
+
+  //   checkAuthStatus();
+  // }, []);
+
   useEffect(() => {
-    document.title = "My Orders - AccsMarket";
     const checkAuthStatus = async () => {
       try {
         const response = await authService.verifyUser();
-        if (response.id) {
-          // console.log(response);
+        if (response) {
+          console.log(response);
           setUserId(response.id);
-          setUserEmail(response.email);
-          fetchOrders(response.id);
+          // const userTickets = await ticketService.getUserTickets(response);
+          // if(userTickets.message==="Tickets not found.")
+          // setTickets(userTickets);
+        } else {
+          navigate("/login");
+          return null;
         }
       } catch (error) {
-        console.error("Auth status check failed:", error);
+        console.error("Authentication error", error);
+        // navigate("/login");
+        return null;
       }
     };
 
     checkAuthStatus();
+  }, []);
+
+  useEffect(() => {
+    // Scroll to the top of the page when the component is mounted
+    window.scrollTo(0, 0);
   }, []);
 
   const fetchOrders = async (id: string) => {

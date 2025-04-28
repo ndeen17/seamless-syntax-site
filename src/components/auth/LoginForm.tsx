@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { authService } from "@/services/authService";
+
+interface AuthResponse {
+  id: string;
+  email: string;
+  name?: string; // Add other fields if needed
+}
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -12,6 +19,26 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const checkAuthStatus = async (): Promise<any> => {
+    try {
+      setIsLoading(true);
+      const response: AuthResponse = await authService.verifyUser();
+      if (response.email) {
+        setIsAuthenticated(true);
+      }
+      return response;
+    } catch (error) {
+      console.error("Auth status check failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,7 +78,7 @@ const LoginForm = () => {
 
         // Redirect to the signed-in homepage after 2 seconds
         setTimeout(() => {
-          navigate("/user-home"); // Adjust this route if needed
+          navigate("/"); // Adjust this route if needed
         }, 2000);
       } else if (data.message === "incorrect password") {
         toast({

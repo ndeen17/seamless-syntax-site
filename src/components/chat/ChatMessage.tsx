@@ -1,4 +1,3 @@
-
 import React from "react";
 import { formatDistanceToNow } from "date-fns";
 import { FileText, Image } from "lucide-react";
@@ -24,9 +23,14 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   seen_by_user,
   attachments = [],
 }) => {
-  const isUser = sender === 'user';
+  const isUser = sender === "user";
   const messageTime = timestamp || time_received;
-  const isMessageSeen = seen !== undefined ? seen : seen_by_user !== undefined ? seen_by_user === 1 : false;
+  const isMessageSeen =
+    seen !== undefined
+      ? seen
+      : seen_by_user !== undefined
+      ? seen_by_user === 1
+      : false;
 
   // Determine if content is a URL
   const isUrl = (str: string) => {
@@ -37,6 +41,37 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     }
   };
 
+  const fetchImage = async (link: string): Promise<string | undefined> => {
+    try {
+      const response = await fetch(
+        `https://aitool.asoroautomotive.com/api/${link}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const imageSrc = await response.text();
+      return imageSrc;
+    } catch (error) {
+      console.error("Error fetching image:", error);
+      return undefined;
+    }
+  };
+
+  // / Fetch images for messages starting with "get-image"
+  //   useEffect(() => {
+  //     if (messages) {
+  //       messages.forEach((message: Message) => {
+  //         if (message.message.startsWith("get-image")) {
+  //
+  //         }
+  //       });
+  //     }
+  //   }, [messages]);
   // Get file icon based on file extension
   const getFileIcon = (filename: string) => {
     const ext = filename.split(".").pop()?.toLowerCase();
@@ -54,9 +89,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   return (
     <div
       className={cn(
-        "flex flex-col max-w-[80%] sm:max-w-[70%] rounded-lg p-3 mb-3 relative transition-all",
-        isUser
-          ? "ml-auto bg-blue-600 text-white rounded-br-none hover:bg-blue-700"
+        "flex flex-col w-fit max-w-[70%] sm:max-w-[50%] rounded-lg p-3 mb-3 relative transition-all",
+        !isUser
+          ? "ml-auto bg-blue-950 text-white rounded-br-none hover:bg-blue-980"
           : "mr-auto bg-gray-100 text-gray-800 rounded-bl-none hover:bg-gray-200"
       )}
     >
@@ -66,25 +101,47 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           title="New message"
         ></div>
       )}
-      
-      {content && !isUrl(content) && (
-        <div className="break-words text-sm sm:text-base">{content}</div>
+
+      {content.startsWith("get-image") ? (
+        (() => {
+          const [imageSrc, setImageSrc] = React.useState<string | undefined>(
+            undefined
+          );
+
+          React.useEffect(() => {
+            fetchImage(content).then((src) => setImageSrc(src));
+          }, [content]);
+
+          return imageSrc ? (
+            <img
+              src={imageSrc}
+              alt="Image loaded"
+              className="max-w-full rounded max-h-[400px] object-contain"
+            />
+          ) : (
+            <p>Loading image...</p>
+          );
+        })()
+      ) : (
+        <p>{content}</p>
       )}
-      
+
       {attachments && attachments.length > 0 && (
         <div className="mt-2 space-y-2">
           {attachments.map((url, idx) => (
             <div key={idx} className="flex flex-col">
               {isImageUrl(url) ? (
                 <div className="group relative">
-                  <img 
-                    src={url} 
-                    alt={`Attachment ${idx + 1}`} 
+                  <img
+                    src={url}
+                    alt={`Attachment ${idx + 1}`}
                     className="max-w-full rounded-md max-h-[200px] object-contain hover:opacity-95 cursor-pointer transition-all"
-                    onClick={() => window.open(url, '_blank')}
+                    onClick={() => window.open(url, "_blank")}
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all rounded-md flex items-center justify-center">
-                    <span className="opacity-0 group-hover:opacity-100 text-white text-sm">Click to view</span>
+                    <span className="opacity-0 group-hover:opacity-100 text-white text-sm">
+                      Click to view
+                    </span>
                   </div>
                 </div>
               ) : (
@@ -94,8 +151,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                   rel="noopener noreferrer"
                   className={cn(
                     "flex items-center text-sm p-2 rounded-md transition-colors",
-                    isUser 
-                      ? "text-white hover:bg-blue-700" 
+                    isUser
+                      ? "text-white hover:bg-blue-700"
                       : "text-blue-600 hover:bg-gray-200"
                   )}
                 >
@@ -107,7 +164,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           ))}
         </div>
       )}
-      
+
       {messageTime && (
         <div
           className={cn(

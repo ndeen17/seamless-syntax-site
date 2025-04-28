@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import UserHeader from "@/components/UserHeader";
@@ -20,49 +19,47 @@ const ChatPage: React.FC = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [ticketSubject, setTicketSubject] = useState("Support Ticket");
 
-  // Check authentication and load messages
   useEffect(() => {
-    const checkAuth = async () => {
+    // Scroll to the top of the page when the component is mounted
+    window.scrollTo(0, 0);
+  }, []);
+
+  // Check authentication only once when page loads
+  useEffect(() => {
+    const checkAuthStatus = async () => {
       try {
-        const user = await authService.verifyUser();
-        if (user) {
-          setUserId(user.id);
-          return user;
-        } else {
-          toast.error("Please log in to view this ticket");
+        const response = await authService.verifyUser();
+        if (response.message === "Please log in again.") {
+          toast.error("Please log in to view your tickets");
           navigate("/login");
           return null;
+        } else {
+          setUserId(response.id);
         }
       } catch (error) {
         console.error("Authentication error", error);
-        toast.error("Authentication error");
-        navigate("/login");
-        return null;
+        navigate("/login"); // Navigate to login on error
       }
     };
 
-    const loadMessages = async () => {
-      if (!ticketId) {
-        navigate("/tickets");
-        return;
-      }
+    checkAuthStatus();
+  }, [navigate]);
 
+  // Load messages when both ticketId and userId are ready
+  useEffect(() => {
+    if (!ticketId || !userId) return; // Do not proceed if ticketId or userId is not available
+
+    const loadMessages = async () => {
       try {
         setIsLoading(true);
-        const user = await checkAuth();
-        if (!user) return;
 
-        // Fetch ticket data to get subject
-        try {
-          const ticket = await ticketService.getTicket(ticketId);
-          if (ticket) {
-            setTicketSubject(ticket.subject);
-          }
-        } catch (error) {
-          console.error("Error fetching ticket details:", error);
+        // Fetch ticket subject
+        const ticket = await ticketService.getTicket(ticketId);
+        if (ticket) {
+          setTicketSubject(ticket.subject);
         }
 
-        // Fetch messages
+        // Fetch initial messages
         const fetchedMessages = await messageService.fetchMessages({
           ticket_id: ticketId,
         });
@@ -72,10 +69,12 @@ const ChatPage: React.FC = () => {
         }
         setMessages(fetchedMessages);
 
-        // Mark unread admin messages as read
+        // Mark unread admin messages as seen
         fetchedMessages.forEach((msg) => {
-          if ((msg.seen_by_user === 0 || msg.seen === false) && 
-              (msg.sender_id === "admin" || msg.sender === "admin")) {
+          if (
+            (msg.seen_by_user === 0 || msg.seen === false) &&
+            (msg.sender_id === "admin" || msg.sender === "admin")
+          ) {
             messageService.markAsSeen(msg.id);
           }
         });
@@ -88,32 +87,35 @@ const ChatPage: React.FC = () => {
     };
 
     loadMessages();
+  }, [ticketId, userId]); // This will run only when both `ticketId` and `userId` are available
 
-    // Set up polling for new messages every 30 seconds
+  // Poll for new messages every 30 seconds only when both ticketId and userId are ready
+  useEffect(() => {
+    if (!ticketId || !userId) return; // Prevent polling if ticketId or userId are not available
+
     const interval = setInterval(async () => {
-      if (ticketId && userId) {
-        try {
-          const fetchedMessages = await messageService.fetchMessages({
-            ticket_id: ticketId,
-          });
+      try {
+        const fetchedMessages = await messageService.fetchMessages({
+          ticket_id: ticketId,
+        });
+        setMessages(fetchedMessages);
 
-          setMessages(fetchedMessages);
-
-          // Mark unread admin messages as read
-          fetchedMessages.forEach((msg) => {
-            if ((msg.seen_by_user === 0 || msg.seen === false) && 
-                (msg.sender_id === "admin" || msg.sender === "admin")) {
-              messageService.markAsSeen(msg.id);
-            }
-          });
-        } catch (error) {
-          console.error("Error polling messages:", error);
-        }
+        // Mark unread admin messages as seen
+        fetchedMessages.forEach((msg) => {
+          if (
+            (msg.seen_by_user === 0 || msg.seen === false) &&
+            (msg.sender_id === "admin" || msg.sender === "admin")
+          ) {
+            messageService.markAsSeen(msg.id);
+          }
+        });
+      } catch (error) {
+        console.error("Error polling messages:", error);
       }
     }, 30000);
 
-    return () => clearInterval(interval);
-  }, [ticketId, navigate]);
+    return () => clearInterval(interval); // Clean up interval on unmount
+  }, [ticketId, userId]); // This will run only when both `ticketId` and `userId` are available
 
   const handleSendMessage = async (content: string, type: string = "text") => {
     if (!ticketId || !content.trim() || !userId) return;
@@ -153,7 +155,7 @@ const ChatPage: React.FC = () => {
         attachments: files,
       });
       toast.success("Files uploaded successfully");
-      
+
       // Refresh the messages list to show the new files
       const fetchedMessages = await messageService.fetchMessages({
         ticket_id: ticketId,
@@ -170,22 +172,24 @@ const ChatPage: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <UserHeader />
-      
+
       <main className="container mx-auto px-4 py-8 flex-1 flex flex-col">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center">
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => navigate("/tickets")}
               className="mr-2"
             >
               <ArrowLeft className="h-4 w-4 mr-1" /> Back
             </Button>
-            <h1 className="text-xl font-bold">{ticketSubject}</h1>
+            <h1 className="text-xl font-bold">
+              {ticketSubject.toLocaleUpperCase()}
+            </h1>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-md border flex-1">
           <ChatWindow
             messages={messages}
@@ -196,7 +200,7 @@ const ChatPage: React.FC = () => {
           />
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

@@ -12,7 +12,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  checkAuthStatus: () => Promise<any>;
+  checkAuthStatus?: () => Promise<any>;
   signup: (
     name: string,
     email: string,
@@ -50,25 +50,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     logout();
   };
 
-  const checkAuthStatus = async (): Promise<any> => {
-    try {
-      setIsLoading(true);
-      const response: AuthResponse = await authService.verifyUser();
-      if (response.email) {
-        setUser({
-          id: response.id,
-          email: response.email,
-          name: response.name || "Unknown User", // Provide a fallback for name
-        });
-        setIsAuthenticated(true);
-      }
-      return response;
-    } catch (error) {
-      console.error("Auth status check failed:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const checkAuthStatus = async (): Promise<any> => {
+  //   try {
+  //     setIsLoading(true);
+  //     const response: AuthResponse = await authService.verifyUser();
+  //     if (response.email) {
+  //       setUser({
+  //         id: response.id,
+  //         email: response.email,
+  //         name: response.name || "Unknown User", // Provide a fallback for name
+  //       });
+  //       setIsAuthenticated(true);
+  //     }
+  //     return response;
+  //   } catch (error) {
+  //     console.error("Auth status check failed:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
   useEffect(() => {
     // checkAuthStatus();
     const tokenExpiryCheck = setInterval(() => {
@@ -233,7 +233,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         user,
         isLoading,
         isAuthenticated,
-        checkAuthStatus,
+        // checkAuthStatus,
         signup,
         login,
         logout,

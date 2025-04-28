@@ -1,7 +1,12 @@
-
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CreditCard, ArrowUpRight, ArrowDownLeft, Wallet } from 'lucide-react';
+import React from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { CreditCard, ArrowUpRight, ArrowDownLeft, Wallet } from "lucide-react";
 
 interface WalletHeaderProps {
   balance: number;
@@ -10,11 +15,11 @@ interface WalletHeaderProps {
   onWithdrawClick?: () => void;
 }
 
-const WalletHeader: React.FC<WalletHeaderProps> = ({ 
-  balance, 
-  currency = 'USD',
+const WalletHeader: React.FC<WalletHeaderProps> = ({
+  balance,
+  currency = "USD",
   onAddFundsClick,
-  onWithdrawClick
+  onWithdrawClick,
 }) => {
   return (
     <Card className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
@@ -28,8 +33,8 @@ const WalletHeader: React.FC<WalletHeaderProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-4 mt-4">
-          <div 
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          <div
             className="bg-white/20 p-3 rounded-lg flex items-center justify-between hover:bg-white/30 cursor-pointer transition-colors"
             onClick={onAddFundsClick}
           >
@@ -38,7 +43,7 @@ const WalletHeader: React.FC<WalletHeaderProps> = ({
               <span>Add Funds</span>
             </div>
           </div>
-          <div 
+          <div
             className="bg-white/20 p-3 rounded-lg flex items-center justify-between hover:bg-white/30 cursor-pointer transition-colors"
             onClick={onWithdrawClick}
           >

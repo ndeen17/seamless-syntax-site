@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowLeft, ShoppingCart, Download, Star } from "lucide-react";
 import { authService } from "@/services/authService";
+import { getPlatformImage } from "@/utils/platformImages";
 
 // Interface for PaymentDetails
 export interface PaymentDetails {
@@ -42,6 +43,11 @@ const ProductDetail = () => {
   const handleDownloadClick = () => {
     setShowInput(true); // Show the input and button when "Download Sample" is clicked
   };
+
+  useEffect(() => {
+    // Scroll to the top of the page when the component is mounted
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleLogInput = () => {
     console.log(inputValue); // Log the entered number
@@ -349,85 +355,91 @@ const ProductDetail = () => {
               </AlertDescription>
             </Alert>
           ) : product ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <div className="bg-gray-100 rounded-lg overflow-hidden">
-                  {product.imageUrl ? (
-                    <img
-                      src={product.imageUrl}
-                      alt={product.platform_name}
-                      className="w-full h-auto object-cover aspect-video"
-                    />
-                  ) : (
-                    <div className="aspect-video flex items-center justify-center text-gray-500">
-                      No image available
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-6 grid grid-cols-4 gap-2">
-                  {[...Array(4)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="bg-gray-100 rounded-md aspect-square"
-                    ></div>
-                  ))}
-                </div>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-12">
+              {/* Product Image Section */}
+              <div className="w-56 md:w-1/2 overflow-hidden shadow-lg border border-gray-300 rounded-lg">
+                <img
+                  src={getPlatformImage(product.platform_name.toLowerCase())}
+                  alt={product.platform_name}
+                  className="w-full h-auto object-cover rounded-lg transition-all hover:scale-105 duration-300"
+                />
               </div>
 
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              {/* Product Details Section */}
+              <div className="w-full md:w-1/2 space-y-6">
+                {/* Product Title */}
+                <h1 className="text-4xl font-extrabold text-gray-900">
                   {product.platform_name}
                 </h1>
-                <i>Category: ({product.category})</i>
-                <br />
-                <i>Quantity: {product.stock_quantity} items left</i>
-                <div className="flex items-center mb-4">
-                  <div className="flex text-yellow-400">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-current" />
-                    ))}
-                  </div>
-                  <span className="text-gray-500 text-sm ml-2">36 reviews</span>
-                </div>
 
-                <div className="text-2xl font-bold text-gray-900 mb-4">
+                {/* Product Category & Stock */}
+                <p className="text-lg text-gray-600 italic">
+                  <span className="font-semibold">Category:</span>{" "}
+                  {product.category} |
+                  <span className="font-semibold">
+                    {" "}
+                    {product.stock_quantity} items in stock
+                  </span>
+                </p>
+
+                {/* Product Price */}
+                <div className="text-3xl font-semibold text-gray-800">
                   ${product.price}
                 </div>
 
-                <div className="prose prose-sm mb-6">
-                  <p className="text-gray-700">{product.description}</p>
+                {/* Product Description Section */}
+                <div className="bg-gray-100 p-1 rounded-md text-left">
+                  {/* Heading with background color */}
+                  <h2 className="text-xl font-extrabold text-gray-900 bg-gray-300 p-2 rounded-md">
+                    Description
+                  </h2>
+                  {/* Description Text */}
+                  <p className="text-gray-700 mt-2">{product.description}</p>
                 </div>
 
-                <div className="space-y-3">
-                  {/* <button className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md flex items-center justify-center transition-colors">
-                    <ShoppingCart className="h-5 w-5 mr-2" />
-                    Add to Cart
-                  </button> */}
+                {/* Important Notice Section */}
+                <div className="bg-red-100 p-1 rounded-md text-left">
+                  <h2 className="text-xl font-extrabold text-gray-900 bg-red-300 p-2 rounded-md">
+                    Important Notice
+                  </h2>
+                  <p className="text-gray-700">{product.important_notice}</p>
+                </div>
 
-                  <button
-                    onClick={handleDownloadClick}
-                    disabled={!product || product.stock_quantity <= 0} // Disable if product is empty or stock is 0
-                    className={`w-full py-3 border ${
-                      !product
-                        ? "border-gray-400 text-gray-400 cursor-not-allowed" // Styling for empty product
+                {/* Action Section */}
+                <div className="space-y-8">
+                  {/* Purchase Button */}
+                  <div className="w-full bg-white p-6 rounded-md shadow-lg flex flex-col gap-4">
+                    <button
+                      onClick={() => setShowInput(!showInput)} // Toggle logic for purchase section
+                      disabled={!product || product.stock_quantity <= 0}
+                      className={`w-full py-3 px-6 rounded-md text-white font-semibold text-lg transition-all duration-300 ease-in-out transform ${
+                        !product
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : product.stock_quantity <= 0
+                          ? "bg-red-500 cursor-not-allowed"
+                          : "bg-gradient-to-r from-blue-500 to-blue-600 hover:scale-105 hover:bg-blue-700"
+                      }`}
+                    >
+                      {!product
+                        ? "Product Not Available"
                         : product.stock_quantity <= 0
-                        ? "border-red-400 text-red-400 cursor-not-allowed" // Styling for out-of-stock product
-                        : "border-blue-600 text-blue-600 hover:bg-blue-50" // Styling for available product
-                    } rounded-md flex items-center justify-center transition-colors`}
-                  >
-                    {!product
-                      ? "Product Not Available" // Text for empty product
-                      : product.stock_quantity <= 0
-                      ? "Out of Stock"
-                      : "Purchase"}{" "}
-                  </button>
-                  {/* Show input and button when "Download Sample" is clicked */}
+                        ? "Out of Stock"
+                        : showInput
+                        ? "Hide Purchase Options"
+                        : "Purchase"}
+                    </button>
+                  </div>
+
+                  {/* Download Section (if applicable) */}
                   {showInput && (
-                    <div className="mt-4 space-y-2">
-                      <div className="mt-4 space-y-2">
-                        <div className="flex items-center space-x-4">
-                          {/* Decrement Button */}
+                    <div className="bg-gray-50 p-6 rounded-md shadow-md space-y-6">
+                      <h2 className="text-2xl font-semibold text-gray-900">
+                        Purchase Details
+                      </h2>
+
+                      {/* Quantity Control */}
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 sm:space-x-4">
+                        <div className="flex items-center space-x-6 w-full sm:w-auto">
                           <button
                             onClick={() => {
                               if (inputValue > 1) {
@@ -438,17 +450,13 @@ const ProductDetail = () => {
                                 );
                               }
                             }}
-                            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md"
+                            className="px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-full text-xl transition-all"
                           >
                             -
                           </button>
-
-                          {/* Display Current Value */}
-                          <span className="text-lg font-semibold">
+                          <span className="text-3xl font-semibold text-gray-800">
                             {inputValue}
                           </span>
-
-                          {/* Increment Button */}
                           <button
                             onClick={() => {
                               if (inputValue < product.stock_quantity) {
@@ -461,55 +469,44 @@ const ProductDetail = () => {
                                 alert("You can't exceed the total stock.");
                               }
                             }}
-                            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md"
+                            className="px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-full text-xl transition-all"
                           >
                             +
                           </button>
                         </div>
+
+                        {/* Coupon Code Input */}
+                        <div className="w-full sm:w-[250px]">
+                          <input
+                            type="text"
+                            value={couponValue}
+                            onChange={(e) => setcouponValue(e.target.value)}
+                            placeholder="Enter coupon code (optional)"
+                            className="w-full py-3 px-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                          />
+                        </div>
                       </div>
-                      <input
-                        type="text"
-                        value={couponValue}
-                        onChange={(e) => setcouponValue(e.target.value)}
-                        placeholder="Enter coupon code (optional)"
-                        className="w-full py-2 px-4 border rounded-md"
-                      />
-                      <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                        Total price: ${totalPriceValue}
-                      </h1>
-                      <button
-                        onClick={() => createPayment()}
-                        className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md flex items-center justify-center transition-colors"
-                      >
-                        <Download className="h-5 w-5 mr-2" />
-                        Download Sample
-                      </button>
+
+                      {/* Total Price Display */}
+                      <div className="text-3xl font-semibold text-gray-900 mt-4">
+                        Total Price:{" "}
+                        <span className="text-blue-600">
+                          ${totalPriceValue}
+                        </span>
+                      </div>
+
+                      {/* Download Button */}
+                      <div className="flex items-center justify-center">
+                        <button
+                          onClick={() => createPayment()}
+                          className="w-full py-4 px-6 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-md flex items-center justify-center gap-4 transition-all duration-300 ease-in-out hover:scale-105"
+                        >
+                          <Download className="h-6 w-6" />
+                          <span>Pay</span>
+                        </button>
+                      </div>
                     </div>
                   )}
-                </div>
-
-                <div className="mt-8 border-t border-gray-200 pt-6">
-                  <h3 className="text-lg font-semibold mb-3">
-                    Product Details
-                  </h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="text-gray-500">Format</div>
-                      <div>Digital Download</div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="text-gray-500">Updated</div>
-                      <div>March 24, 2025</div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="text-gray-500">License</div>
-                      <div>Standard License</div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="text-gray-500">File size</div>
-                      <div>15.2 MB</div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>

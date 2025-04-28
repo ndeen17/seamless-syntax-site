@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { authService } from "@/services/authService";
+
+interface AuthResponse {
+  id: string;
+  email: string;
+  name?: string; // Add other fields if needed
+}
 
 const SignupForm = () => {
   const [name, setName] = useState("");
@@ -17,7 +24,29 @@ const SignupForm = () => {
   const [code, setVerificationCode] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { signup, verifyCode, isLoading } = useAuth();
+  const { signup, verifyCode } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const checkAuthStatus = async (): Promise<any> => {
+    try {
+      setIsLoading(true);
+      const response: AuthResponse = await authService.verifyUser();
+      if (response.email) {
+        setIsAuthenticated(true);
+      }
+      return response;
+    } catch (error) {
+      console.error("Auth status check failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
 
   const handleSignup = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -72,9 +101,9 @@ const SignupForm = () => {
         await verifyCode(email, code);
         toast({
           title: "Success",
-          description: "Your account has been verified. You can now log in.",
+          description: "Your account has been verified.",
         });
-        navigate("/login");
+        navigate("/");
       } catch (error) {
         toast({
           title: "Error",
@@ -234,14 +263,14 @@ const SignupForm = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          {/* <div className="grid grid-cols-2 gap-3">
             <Button variant="outline" type="button" className="w-full">
               Google
             </Button>
             <Button variant="outline" type="button" className="w-full">
               Facebook
             </Button>
-          </div>
+          </div> */}
         </>
       )}
     </form>

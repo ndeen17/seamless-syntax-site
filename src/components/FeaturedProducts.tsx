@@ -1,11 +1,19 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchFeaturedProducts, Product } from "@/services/digitalProductsService";
+import {
+  fetchFeaturedProducts,
+  Product,
+} from "@/services/digitalProductsService";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ExternalLink, ShoppingCart } from "lucide-react";
 import { getPlatformImage } from "@/utils/platformImages";
 
 const FeaturedProducts = () => {
@@ -18,26 +26,31 @@ const FeaturedProducts = () => {
     queryFn: fetchFeaturedProducts,
   });
 
+  const truncateDescription = (description) => {
+    const words = description.split(" ");
+    if (words.length > 10) {
+      return words.slice(0, 8).join(" ") + "...";
+    }
+    return description;
+  };
+
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      <div className="flex flex-col gap-6 mb-12">
         {[...Array(3)].map((_, i) => (
-          <Card key={i} className="overflow-hidden border border-border">
-            <div className="relative">
-              <Skeleton className="h-48 w-full" />
+          <Card
+            key={i}
+            className="overflow-hidden border border-border h-36 w-full"
+          >
+            <div className="flex items-center h-full p-6 gap-6">
+              <Skeleton className="w-16 h-16 rounded-md" />
+              <div className="flex flex-col gap-2 w-full">
+                <Skeleton className="h-6 w-1/2" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+              <Skeleton className="h-10 w-24 ml-auto" />
             </div>
-            <CardHeader className="pb-2">
-              <Skeleton className="h-6 w-3/4 mb-2" />
-              <Skeleton className="h-4 w-1/2" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="h-4 w-full mb-2" />
-              <Skeleton className="h-4 w-3/4" />
-            </CardContent>
-            <CardFooter className="border-t border-border pt-4 flex justify-between">
-              <Skeleton className="h-6 w-16" />
-              <Skeleton className="h-9 w-24" />
-            </CardFooter>
           </Card>
         ))}
       </div>
@@ -55,66 +68,74 @@ const FeaturedProducts = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+    <div className="flex flex-col gap-10 mb-12">
       {products &&
-        Object.entries(products).flatMap(
-          ([platform, productArray]) =>
-            Array.isArray(productArray)
-              ? productArray.map((product: Product) => (
+        Object.entries(products).map(([platform, productArray]) => {
+          const items = Array.isArray(productArray)
+            ? (productArray as Product[])
+            : []; // Ensure productArray is an array
+          return (
+            <div key={platform} className="flex flex-col gap-4">
+              {/* Platform Header */}
+              <div className="flex items-center justify-between px-4">
+                <h2 className="text-xl font-bold">{platform} Accounts</h2>
+                {/* <span className="text-muted-foreground text-sm">
+                  {items.length} total
+                </span> */}
+              </div>
+
+              {/* List of Products */}
+              <div className="flex flex-col gap-4">
+                {items.map((product) => (
                   <Card
                     key={product.id}
-                    className="overflow-hidden border border-border h-full flex flex-col hover:shadow-md transition-shadow"
+                    className="w-full flex items-center justify-between p-6 border border-border rounded-lg hover:shadow-md transition-all gap-6 bg-white h-22"
                   >
-                    <div className="relative">
-                      <div className="h-48 bg-muted flex items-center justify-center">
+                    {/* Left Image */}
+                    <div className="flex items-center gap-4 min-w-0">
+                      <div className="w-16 h-16 rounded-md flex items-center justify-center overflow-hidden">
+                        {/* <div className="w-16 h-16 rounded-md bg-muted flex items-center justify-center overflow-hidden"> */}
                         <img
-                          src={getPlatformImage(product.platform_name)}
+                          src={getPlatformImage(
+                            product.platform_name.toLocaleLowerCase()
+                          )}
                           alt={product.platform_name}
-                          className="h-full w-full object-cover"
+                          className="w-12 h-12 object-contain"
                         />
                       </div>
-                    </div>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-xl">
-                        {product.platform_name}
-                      </CardTitle>
-                      <p className="text-sm text-muted-foreground">
-                        Category: {product.category}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Quantity: {product.stock_quantity}
-                      </p>
-                    </CardHeader>
-                    <CardContent className="flex-grow">
-                      <p className="text-muted-foreground line-clamp-3">
-                        {product.description}
-                      </p>
-                    </CardContent>
-                    <CardFooter className="border-t border-border pt-4 flex justify-between items-center">
-                      <span className="font-semibold text-lg">
-                        {product.price}
-                      </span>
-                      <div className="flex gap-2">
-                        <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm flex items-center">
-                          <ShoppingCart className="h-4 w-4 mr-2" />
-                          <Link
-                            to={`/digital-products/${product.id}`}
-                            className="inline-flex items-center text-xs text-muted-foreground hover:text-foreground text-white"
-                          >
-                            {/* <ExternalLink className="h-3 w-3 mr-1" /> */}
-                            details
-                          </Link>
-                        </button>
-                        {/* <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm flex items-center">
-                          <ShoppingCart className="h-4 w-4 mr-2" />
-                          Add to Cart
-                        </button> */}
+
+                      {/* Middle Text */}
+                      <div className="flex flex-col justify-center min-w-0">
+                        <h3 className="text-lg font-semibold truncate">
+                          {product.platform_name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground truncate">
+                          {product.category} · {product.stock_quantity} in stock
+                        </p>
+                        <p className="text-xs text-muted-foreground line-clamp-1">
+                          {truncateDescription(product.description)}
+                        </p>
                       </div>
-                    </CardFooter>
+                    </div>
+
+                    {/* Right Price & Button */}
+                    <div className="flex flex-col items-end justify-center gap-2 min-w-fit">
+                      <span className="font-bold text-xl text-primary whitespace-nowrap">
+                        ${product.price}
+                      </span>
+                      <Link
+                        to={`/digital-products/${product.id}`}
+                        className="px-4 py-2 rounded-md bg-primary text-white text-sm hover:bg-primary/90 transition-all"
+                      >
+                        View
+                      </Link>
+                    </div>
                   </Card>
-                ))
-              : []
-        )}
+                ))}
+              </div>
+            </div>
+          );
+        })}
     </div>
   );
 };

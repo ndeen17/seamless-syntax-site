@@ -7,7 +7,9 @@ const UserHomePage = () => {
     <div>
       <Hero />
       <FeaturedProducts />
-      <a href="/wallet" className="text-blue-600 underline">Go to Wallet</a>
+      <a href="/wallet" className="text-blue-600 underline">
+        Go to Wallet
+      </a>
     </div>
   );
 };

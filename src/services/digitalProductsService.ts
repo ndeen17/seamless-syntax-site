@@ -10,6 +10,7 @@ export interface Product {
   price: string;
   stock_quantity:number;
   imageUrl?: string;
+important_notice: string;
 }
 
 export const DIGITAL_PRODUCTS_ENDPOINTS = {

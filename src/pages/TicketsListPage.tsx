@@ -70,6 +70,11 @@ const TicketsListPage: React.FC = () => {
     checkAuthStatus();
   }, []);
 
+  useEffect(() => {
+    // Scroll to the top of the page when the component is mounted
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleCreateTicket = () => {
     navigate("/ticket");
   };
@@ -145,53 +150,60 @@ const TicketsListPage: React.FC = () => {
             {tickets.map((ticket) => (
               <Card
                 key={ticket.ticket_id}
-                className="relative hover:shadow-md transition-shadow"
+                className="relative hover:shadow-lg h-auto hover:scale-[1.01] transition-all duration-200 rounded-2xl border p-4"
               >
                 {ticket.unreadCount > 0 && (
-                  <span className="absolute top-4 right-4 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+                  <span className="absolute top-3 right-3 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white shadow-md">
                     {ticket.unreadCount}
                   </span>
                 )}
 
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-xl">{ticket.subject}</CardTitle>
-                  <CardDescription className="flex items-center">
+                <CardHeader className="p-1">
+                  <CardTitle className="text-lg font-semibold leading-snug text-gray-900">
+                    {ticket.subject.toLocaleUpperCase()}
+                  </CardTitle>
+                  <CardDescription className="mt-1 flex items-center text-sm text-gray-500">
                     <Clock className="h-4 w-4 mr-1" />
                     Created on {formatDate(ticket.created_at)}
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent>
-                  <div className="flex flex-wrap justify-between gap-2">
+                <CardContent className="p-1">
+                  <div className="flex flex-wrap gap-2">
                     <Badge
                       variant="outline"
-                      className={getCategoryColor(ticket.category)}
+                      className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(
+                        ticket.category
+                      )}`}
                     >
                       {ticket.category}
                     </Badge>
-
                     <Badge
                       variant="outline"
-                      className={
+                      className={`text-xs px-2 py-1 rounded-full ${
                         ticket.status === "open"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-gray-100 text-gray-800"
-                      }
+                          ? "bg-green-100 text-green-700"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
                     >
                       {ticket.status === "open" ? "Open" : "Closed"}
                     </Badge>
                   </div>
                 </CardContent>
 
-                <CardFooter>
-                  <Button
-                    variant="ghost"
-                    className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-0"
-                    onClick={() => handleViewTicket(ticket.ticket_id)}
-                  >
-                    View Conversation
-                    <ChevronRight className="h-4 w-4 ml-1" />
-                  </Button>
+                <CardFooter className="p-1">
+                  {ticket.status === "open" ? (
+                    <Button
+                      variant="ghost"
+                      className="flex items-center text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-0 gap-1"
+                      onClick={() => handleViewTicket(ticket.ticket_id)}
+                    >
+                      View Conversation
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  ) : (
+                    ""
+                  )}
                 </CardFooter>
               </Card>
             ))}

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import AuthLayout from "@/components/auth/AuthLayout";
@@ -21,12 +20,12 @@ const Login = () => {
           </p>
         </div>
         <LoginForm />
-        <div className="text-center text-sm">
+        {/* <div className="text-center text-sm">
           Don't have an account?{" "}
           <Link to="/signup" className="text-blue-600 hover:text-blue-800 font-medium">
             Sign up
           </Link>
-        </div>
+        </div> */}
       </AuthLayout>
     </>
   );

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
@@ -19,8 +18,10 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
               <span className="sr-only">Digital Products Marketplace</span>
               <div className="flex items-center justify-center">
                 <span className="text-xl sm:text-2xl font-bold text-blue-900 flex items-center">
-                  <span className="bg-blue-600 text-white px-2 sm:px-3 py-1 rounded mr-1">Digital</span>
-                  Products
+                  <span className="bg-blue-600 text-white px-2 sm:px-3 py-1 rounded mr-1">
+                    Accounts
+                  </span>
+                  Hub
                 </span>
               </div>
             </Link>
@@ -30,17 +31,23 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
           </div>
           <div className="mt-4 text-center text-sm text-gray-600">
             <p>
-              {window.location.pathname.includes('login') ? (
+              {window.location.pathname.includes("login") ? (
                 <>
-                  Don't have an account?{' '}
-                  <Link to="/signup" className="font-semibold text-blue-600 hover:text-blue-800">
+                  Don't have an account?{" "}
+                  <Link
+                    to="/signup"
+                    className="font-semibold text-blue-600 hover:text-blue-800"
+                  >
                     Sign up
                   </Link>
                 </>
               ) : (
                 <>
-                  Already have an account?{' '}
-                  <Link to="/login" className="font-semibold text-blue-600 hover:text-blue-800">
+                  Already have an account?{" "}
+                  <Link
+                    to="/login"
+                    className="font-semibold text-blue-600 hover:text-blue-800"
+                  >
                     Log in
                   </Link>
                 </>

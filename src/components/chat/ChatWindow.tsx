@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from "react";
 import { Message } from "@/services/messageService";
 import ChatMessage from "./ChatMessage";
@@ -56,7 +55,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
           ))
         ) : (
           <div className="flex items-center justify-center h-full">
-            <p className="text-gray-500">No messages yet. Start the conversation!</p>
+            <p className="text-gray-500">
+              No messages yet. Start the conversation!
+            </p>
           </div>
         )}
         <div ref={messagesEndRef} />
