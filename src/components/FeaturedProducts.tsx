@@ -18,6 +18,7 @@ const FeaturedProducts = () => {
   });
 
   const truncateDescription = (description) => {
+    if (!description) return '';
     const words = description.split(" ");
     if (words.length > 10) {
       return words.slice(0, 5).join(" ") + "...";
@@ -25,10 +26,13 @@ const FeaturedProducts = () => {
     return description;
   };
 
-  // Group products by platform
+  // Group products by platform - with proper null checking
   const groupedProducts = React.useMemo(() => {
-    if (!products) return {};
+    if (!products || !Array.isArray(products)) return {};
+    
     return products.reduce((acc: { [key: string]: Product[] }, product) => {
+      if (!product || !product.platform_name) return acc;
+      
       if (!acc[product.platform_name]) {
         acc[product.platform_name] = [];
       }
@@ -64,6 +68,17 @@ const FeaturedProducts = () => {
     );
   }
 
+  // If groupedProducts is empty or invalid, show a message
+  if (!groupedProducts || Object.keys(groupedProducts).length === 0) {
+    return (
+      <Alert>
+        <AlertDescription>
+          No featured products available at the moment.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {Object.entries(groupedProducts).map(([platform, platformProducts]) => (
@@ -76,7 +91,7 @@ const FeaturedProducts = () => {
             <h2 className="text-l font-bold">{platform} accounts</h2>
             <span className="text-sm text-gray-500">
               {platformProducts.reduce(
-                (total, product) => total + product.stock_quantity,
+                (total, product) => total + (product.stock_quantity || 0),
                 0
               )}{" "}
               total accounts
@@ -85,8 +100,8 @@ const FeaturedProducts = () => {
           <div className="divide-y">
             {platformProducts.map((product) => {
               let borderClass = "";
-              let stockMessage = `${product.stock_quantity} in stock`;
-              if (product.stock_quantity === 0) {
+              let stockMessage = `${product.stock_quantity || 0} in stock`;
+              if (!product.stock_quantity) {
                 borderClass = "border-red-800";
               } else if (product.stock_quantity < 10) {
                 borderClass = "border-yellow-800";
@@ -106,7 +121,7 @@ const FeaturedProducts = () => {
                       />
                     </div>
                     <div className="w-full">
-                      <h3 className="font-medium">{product.category}</h3>
+                      <h3 className="font-medium">{product.category || 'Unknown'}</h3>
                       <p className="text-sm text-gray-500">
                         {truncateDescription(product.description)}
                       </p>
