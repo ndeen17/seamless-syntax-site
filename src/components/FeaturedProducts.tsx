@@ -1,18 +1,9 @@
+
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  fetchFeaturedProducts,
-  Product,
-} from "@/services/digitalProductsService";
+import { fetchFeaturedProducts, Product } from "@/services/digitalProductsService";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getPlatformImage } from "@/utils/platformImages";
 
@@ -29,29 +20,35 @@ const FeaturedProducts = () => {
   const truncateDescription = (description) => {
     const words = description.split(" ");
     if (words.length > 10) {
-      return words.slice(0, 8).join(" ") + "...";
+      return words.slice(0, 5).join(" ") + "...";
     }
     return description;
   };
 
+  // Group products by platform
+  const groupedProducts = React.useMemo(() => {
+    if (!products) return {};
+    return products.reduce((acc: { [key: string]: Product[] }, product) => {
+      if (!acc[product.platform_name]) {
+        acc[product.platform_name] = [];
+      }
+      acc[product.platform_name].push(product);
+      return acc;
+    }, {});
+  }, [products]);
+
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-6 mb-12">
+      <div className="space-y-4">
         {[...Array(3)].map((_, i) => (
-          <Card
-            key={i}
-            className="overflow-hidden border border-border h-36 w-full"
-          >
-            <div className="flex items-center h-full p-6 gap-6">
-              <Skeleton className="w-16 h-16 rounded-md" />
-              <div className="flex flex-col gap-2 w-full">
-                <Skeleton className="h-6 w-1/2" />
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-              </div>
-              <Skeleton className="h-10 w-24 ml-auto" />
+          <div key={i} className="bg-white p-4 rounded-lg shadow">
+            <Skeleton className="h-6 w-48 mb-4" />
+            <div className="space-y-2">
+              {[...Array(3)].map((_, j) => (
+                <Skeleton key={j} className="h-16 w-full" />
+              ))}
             </div>
-          </Card>
+          </div>
         ))}
       </div>
     );
@@ -59,7 +56,7 @@ const FeaturedProducts = () => {
 
   if (error) {
     return (
-      <Alert variant="destructive" className="mb-6">
+      <Alert variant="destructive">
         <AlertDescription>
           Unable to load featured products. Please try again later.
         </AlertDescription>
@@ -68,74 +65,72 @@ const FeaturedProducts = () => {
   }
 
   return (
-    <div className="flex flex-col gap-10 mb-12">
-      {products &&
-        Object.entries(products).map(([platform, productArray]) => {
-          const items = Array.isArray(productArray)
-            ? (productArray as Product[])
-            : []; // Ensure productArray is an array
-          return (
-            <div key={platform} className="flex flex-col gap-4">
-              {/* Platform Header */}
-              <div className="flex items-center justify-between px-4">
-                <h2 className="text-xl font-bold">{platform} Accounts</h2>
-                {/* <span className="text-muted-foreground text-sm">
-                  {items.length} total
-                </span> */}
-              </div>
+    <div className="space-y-6">
+      {Object.entries(groupedProducts).map(([platform, platformProducts]) => (
+        <div
+          key={platform}
+          id={platform.toLowerCase()}
+          className="bg-white w-[99%] mx-auto rounded-lg shadow-sm overflow-hidden scroll-mt-32 sm:w-[65%]"
+        >
+          <div className="p-4 border-b flex justify-between items-center">
+            <h2 className="text-l font-bold">{platform} accounts</h2>
+            <span className="text-sm text-gray-500">
+              {platformProducts.reduce(
+                (total, product) => total + product.stock_quantity,
+                0
+              )}{" "}
+              total accounts
+            </span>
+          </div>
+          <div className="divide-y">
+            {platformProducts.map((product) => {
+              let borderClass = "";
+              let stockMessage = `${product.stock_quantity} in stock`;
+              if (product.stock_quantity === 0) {
+                borderClass = "border-red-800";
+              } else if (product.stock_quantity < 10) {
+                borderClass = "border-yellow-800";
+              }
 
-              {/* List of Products */}
-              <div className="flex flex-col gap-4">
-                {items.map((product) => (
-                  <Card
-                    key={product.id}
-                    className="w-full flex items-center justify-between p-6 border border-border rounded-lg hover:shadow-md transition-all gap-6 bg-white h-22"
-                  >
-                    {/* Left Image */}
-                    <div className="flex items-center gap-4 min-w-0">
-                      <div className="w-16 h-16 rounded-md flex items-center justify-center overflow-hidden">
-                        {/* <div className="w-16 h-16 rounded-md bg-muted flex items-center justify-center overflow-hidden"> */}
-                        <img
-                          src={getPlatformImage(
-                            product.platform_name.toLocaleLowerCase()
-                          )}
-                          alt={product.platform_name}
-                          className="w-12 h-12 object-contain"
-                        />
-                      </div>
-
-                      {/* Middle Text */}
-                      <div className="flex flex-col justify-center min-w-0">
-                        <h3 className="text-lg font-semibold truncate">
-                          {product.platform_name}
-                        </h3>
-                        <p className="text-sm text-muted-foreground truncate">
-                          {product.category} · {product.stock_quantity} in stock
-                        </p>
-                        <p className="text-xs text-muted-foreground line-clamp-1">
-                          {truncateDescription(product.description)}
-                        </p>
-                      </div>
+              return (
+                <div
+                  key={product.id}
+                  className={`p-4 hover:bg-gray-50 flex items-center justify-between transition-colors border ${borderClass} rounded-lg mb-3`}
+                >
+                  <div className="flex items-center space-x-4 w-full">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+                      <img
+                        src={getPlatformImage(product.platform_name)}
+                        alt={product.platform_name}
+                        className="w-6 h-6 object-contain"
+                      />
                     </div>
-
-                    {/* Right Price & Button */}
-                    <div className="flex flex-col items-end justify-center gap-2 min-w-fit">
-                      <span className="font-bold text-xl text-primary whitespace-nowrap">
-                        ${product.price}
-                      </span>
-                      <Link
-                        to={`/digital-products/${product.id}`}
-                        className="px-4 py-2 rounded-md bg-primary text-white text-sm hover:bg-primary/90 transition-all"
+                    <div className="w-full">
+                      <h3 className="font-medium">{product.category}</h3>
+                      <p className="text-sm text-gray-500">
+                        {truncateDescription(product.description)}
+                      </p>
+                      <span
+                        className={`block text-sm font-bold ${borderClass} mt-2`}
                       >
-                        View
-                      </Link>
+                        {stockMessage}
+                      </span>
                     </div>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          );
-        })}
+                  </div>
+                  <div className="flex items-center">
+                    <Link
+                      to={`/digital-products/${product.id}`}
+                      className="px-4 py-1 bg-gray-100 text-gray-800 rounded hover:bg-gray-200 transition-colors"
+                    >
+                      View
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
